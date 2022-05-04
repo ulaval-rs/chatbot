@@ -15,7 +15,7 @@ app.get('/', function(req, res){
 	res.send('Hello! I am a research helper. What would you like to share?')
 })
 
-app.get('/webhook', function(req, res) {
+app.get('/webhook/', function(req, res) {
 	if (req.query['hub.verify_token'] == "moose"){
 		res.send(req.qery['hub.challenge'])
 	}
