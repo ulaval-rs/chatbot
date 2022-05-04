@@ -16,7 +16,7 @@ app.get('/', function(req, res){
 })
 
 app.get('/webhook/', function(req, res) {
-	if (req.query['hub.verify_token'] == "moose"){
+	if (req.query['hub.verify_token'] === "moose"){
 		res.send(req.qery['hub.challenge'])
 	}
 	res.send("Wrong token")
