@@ -48,8 +48,10 @@ function sendText(sender, text){
 			recipient: {id: sender},
 			message: messageData,
 		}, function(error, response, body){
-			console.log("sending error")
-		} else if (response.body.error){
+			if (error) {
+				console.log("sending error")
+			}
+		 else if (response.body.error){
 			console.log("response body error")
 		}
 	})
