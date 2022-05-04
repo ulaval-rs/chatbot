@@ -15,7 +15,7 @@ app.get('/', function(req, res){
 	res.send('Hello! I am a research helper. What would you like to share?')
 })
 
-token = "EABK5DqeVQKcBAP1Vo57lcbAnWu5mGcYLrMBfXpaFzO3LJLVII4UEgYdEkGC686fbABbY8y2TLSRia0mI4yJ4vReyHADPZBEVbt8dcjp2C3fVZCVnsxBO1T0BYAmpUNM7ni69OGdbV6GACC9lhOTi7e5IjHN3ZChLFlp9jYCTYIwGQUze12XM1gFh6mZBDSnDisZB7ZAY0ZBegZDZD"
+let token = "EABK5DqeVQKcBAP1Vo57lcbAnWu5mGcYLrMBfXpaFzO3LJLVII4UEgYdEkGC686fbABbY8y2TLSRia0mI4yJ4vReyHADPZBEVbt8dcjp2C3fVZCVnsxBO1T0BYAmpUNM7ni69OGdbV6GACC9lhOTi7e5IjHN3ZChLFlp9jYCTYIwGQUze12XM1gFh6mZBDSnDisZB7ZAY0ZBegZDZD"
 
 app.get('/webhook/', function(req, res) {
 	if (req.query['hub.verify_token'] === "moose"){
@@ -25,7 +25,7 @@ app.get('/webhook/', function(req, res) {
 })
 
 app.post('/webhook/', function(req, res) {
-	let messaging_events = req.body.entry[0].messaging_events
+	let messaging_events = req.body.entry[0].messaging
 	for (let i = 0; i < messaging_events.length; i++){
 		let event = messaging_events[i]
 		let sender = event.sender.id
@@ -41,10 +41,10 @@ function sendText(sender, text){
 	let messageData = {text: text}
 	request({
 		url : "https://graph.facebook.com/v2.6/me/messages",
-		qs: {access_token, token},
+		qs: {access_token: token},
 		method: "POST",
 		json: {
-			reciept: {id: sender},
+			recipient: {id: sender},
 			message: messageData,
 		}, function(error, response, body){
 			console.log("sending error")
