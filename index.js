@@ -3,7 +3,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
-const greetings = ["hi", "hello", "whats up", "hey"]
+let greetings = ["hi", "hello", "whats up", "hey"]
 
 const app = express()
 app.set('port', (process.env.PORT || 5000))
