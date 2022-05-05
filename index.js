@@ -30,7 +30,8 @@ app.post('/webhook/', function(req, res) {
 	for (let i = 0; i < messaging_events.length; i++){
 		let event = messaging_events[i]
 		let sender = event.sender.id
-		if (event.message && event.message.text){
+		if (event.message){
+			if (event.message.text){
 			let text = event.message.text
 			if (greetings.find(element => element === text.toLowerCase())){
 				sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
@@ -45,6 +46,7 @@ app.post('/webhook/', function(req, res) {
 	else {
 		sendText(sender, "Great! Can you send me your geographical coordinates?")
 	}
+}
 	}
 	res.sendStatus(200)
 })
