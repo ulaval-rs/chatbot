@@ -48,7 +48,7 @@ app.post('/webhook/', function(req, res) {
 		sendImage(sender, event.message.attachments[0].payload)
 		sendText("Can you send me your geographical coordinates?")
 		sendText(sender, String((event.message.attachments[0].payload.url)))
-		//sendText(sender, event.message.attachments[0].payload.coordinates.lat)
+		sendText(sender, Object.keys(event.message.attachments[0].payload)
 	}
 }
 	}
