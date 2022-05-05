@@ -3,6 +3,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
+const greetings = ["hi", "hello", "whats up", "hey"]
 
 const app = express()
 app.set('port', (process.env.PORT || 5000))
@@ -29,10 +30,15 @@ app.post('/webhook/', function(req, res) {
 	for (let i = 0; i < messaging_events.length; i++){
 		let event = messaging_events[i]
 		let sender = event.sender.id
-		if (event.message && event.message.text === "Hi"){
+		if (event.message){
 			let text = event.message.text
-			sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
+			if (geetings.find(element => element === text.toLowerCase())){
+				sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
 		}
+		else {
+			sendText(sender, "I didn't quite catch that")
+		}
+	}
 	}
 	res.sendStatus(200)
 })
