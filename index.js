@@ -29,9 +29,9 @@ app.post('/webhook/', function(req, res) {
 	for (let i = 0; i < messaging_events.length; i++){
 		let event = messaging_events[i]
 		let sender = event.sender.id
-		if (event.message && event.message.text){
+		if (event.message && event.message.text === "Hi"){
 			let text = event.message.text
-			sendText(sender, "Text echo: " + text.substring(0, 100))
+			sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
 		}
 	}
 	res.sendStatus(200)
