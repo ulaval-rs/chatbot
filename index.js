@@ -34,7 +34,10 @@ app.post('/webhook/', function(req, res) {
 			let text = event.message.text
 			if (greetings.find(element => element === text.toLowerCase())){
 				sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
-		}
+			}
+			else if (text.indexOf("moose") !== -1){
+				sendText(sender, "Can you send me a picture?")
+			}
 		else {
 			sendText(sender, "I didn't quite catch that")
 		}
