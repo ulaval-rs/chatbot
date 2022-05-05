@@ -32,7 +32,7 @@ app.post('/webhook/', function(req, res) {
 		let sender = event.sender.id
 		if (event.message){
 			let text = event.message.text
-			if (geetings.find(element => element === text.toLowerCase())){
+			if (greetings.find(element => element === text.toLowerCase())){
 				sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
 		}
 		else {
