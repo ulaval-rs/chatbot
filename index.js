@@ -43,7 +43,7 @@ app.post('/webhook/', function(req, res) {
 		}
 	}
 	else {
-		sendText(sender, event.message)
+		sendText(sender, "Great! Can you send me your geographical coordinates?")
 	}
 	}
 	res.sendStatus(200)
