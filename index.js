@@ -42,6 +42,9 @@ app.post('/webhook/', function(req, res) {
 			sendText(sender, "I didn't quite catch that")
 		}
 	}
+	else {
+		sendText(sender, event.message)
+	}
 	}
 	res.sendStatus(200)
 })
