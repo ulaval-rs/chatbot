@@ -45,7 +45,7 @@ app.post('/webhook/', function(req, res) {
 	}
 	else {
 		//sendText(sender, "Great! Can you send me your geographical coordinates?")
-		sendText(sender, String(Object.keys(event.message)))
+		sendText(sender, String(event.message.attachments))
 	}
 }
 	}
