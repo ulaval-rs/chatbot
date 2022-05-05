@@ -45,7 +45,8 @@ app.post('/webhook/', function(req, res) {
 	}
 	else {
 		//sendText(sender, "Great! Can you send me your geographical coordinates?")
-		sendText(sender, String(((event.message.attachments[0].type))))
+		//sendText(sender, String(((event.message.attachments[0].type))))
+		sendImage(sender, event.message.attachments[0].payload)
 	}
 }
 	}
@@ -54,6 +55,31 @@ app.post('/webhook/', function(req, res) {
 
 function sendText(sender, text){
 	let messageData = {text: text}
+	request({
+		url : "https://graph.facebook.com/v2.6/me/messages",
+		qs: {access_token: token},
+		method: "POST",
+		json: {
+			recipient: {id: sender},
+			message: messageData,
+		}, function(error, response, body){
+			if (error) {
+				console.log("sending error")
+			}
+		 else if (response.body.error){
+			console.log("response body error")
+		}
+	}
+})
+}
+
+function sendImage(sender, payload){
+	let messageData = {
+		"attachment": {
+			"type": "image",
+			"payload": payload
+		}
+	}
 	request({
 		url : "https://graph.facebook.com/v2.6/me/messages",
 		qs: {access_token: token},
