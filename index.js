@@ -54,12 +54,13 @@ app.post('/webhook/', function(req, res) {
 			axios.get(url).then(res => {
 				sendText(sender, res.status)
 			}).catch(error => {
-				sendText(sender, error)
+				sendText(sender, err)
 			})
 			else{
 				sendText(sender, "I'm sorry, please re-enter your location")
 			}
 		}
+	}
 	}
 	else {
 		//sendText(sender, "This is your photo")
