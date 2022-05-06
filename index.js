@@ -39,6 +39,9 @@ app.post('/webhook/', function(req, res) {
 			else if (text.indexOf("moose") !== -1){
 				sendText(sender, "Can you send me a picture?")
 			}
+			else if (text.indexOf("google") !== -1){
+				sendText(sender, text.slice(text.indexOf("@")))
+			}
 		else {
 			sendText(sender, "I didn't quite catch that")
 		}
