@@ -2,8 +2,7 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
-const request = require('request')
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const axios = require('axios');
 let greetings = ["hi", "hello", "whats up", "hey"]
 
 const app = express()
@@ -52,12 +51,11 @@ app.post('/webhook/', function(req, res) {
 		else {
 			//sendText(sender, "I didn't quite catch that")
 			var url = 'https://google.com/maps/place/' + text
-			var http = new XMLHttpRequest()
-			http.open('HEAD', url, false)
-			http.send()
-			if (http.status != 404){
-				sendText(sender, url)
-			}
+			axios.get(url).then(res => {
+				sendText(sender, res.status)
+			}).catch(error => {
+				sendText(sender, error)
+			})
 			else{
 				sendText(sender, "I'm sorry, please re-enter your location")
 			}
