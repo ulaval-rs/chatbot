@@ -51,7 +51,7 @@ app.post('/webhook/', function(req, res) {
 		else {
 			//sendText(sender, "I didn't quite catch that")
 			var url = 'https://google.com/maps/place/' + text
-			var http = new HMLHttpRequest()
+			var http = new XMLHttpRequest()
 			http.open('HEAD', url, false)
 			http.send()
 			if (http.status != 404){
