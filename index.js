@@ -45,7 +45,8 @@ app.post('/webhook/', function(req, res) {
 				let separation = x_and_y_coordinates.indexOf(",")
 				let x = x_and_y_coordinates.slice(0, separation)
 				let y = x_and_y_coordinates.slice(separation + 1)
-				sendText(sender, x + "," + y)
+				sendText(sender, "X coordinate: " + x)
+				sendText(sender, "Y coordinate: " + y)
 			}
 		else {
 			sendText(sender, "I didn't quite catch that")
