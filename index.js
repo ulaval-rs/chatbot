@@ -53,7 +53,7 @@ app.post('/webhook/', function(req, res) {
 				sendText(sender, "I didn't quite catch that")
 				var url = 'https://google.com/maps/place/' + text
 				axios.get(url).then(res => {
-					sendText(sender, res.status)
+					sendText(sender, String(Object.keys(res)))
 					}).catch(error => {sendText(sender, error)})
 				}
 			}
