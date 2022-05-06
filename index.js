@@ -50,7 +50,7 @@ app.post('/webhook/', function(req, res) {
 			}
 		else {
 			//sendText(sender, "I didn't quite catch that")
-			window.open('https://google.com/maps/place' + text)
+			sendText(sender, 'https://google.com/maps/place' + text)
 		}
 	}
 	else {
