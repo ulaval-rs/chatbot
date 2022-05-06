@@ -49,15 +49,15 @@ app.post('/webhook/', function(req, res) {
 				sendText(sender, "Y coordinate: " + y)
 			}
 		else {
-			sendText(sender, "I didn't quite catch that")
+			//sendText(sender, "I didn't quite catch that")
+			window.open('https://google.com/maps/place' + text)
 		}
 	}
 	else {
 		//sendText(sender, "This is your photo")
 		//sendImage(sender, event.message.attachments[0].payload)
 		sendText(sender, "Can you send me your geographical coordinates?")
-		sendText(sender, "https://www.google.com/maps")
-		sendText(sender, "Choose your location on google maps and send back the link")
+		sendText(sender, "In what city or region did you see the moose?")
 		//sendText(sender, String((event.message.attachments[0].payload.url)))
 		//sendText(sender, String(Object.keys(event.message.attachments[0].payload)))
 	}
