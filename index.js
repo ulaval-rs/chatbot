@@ -41,7 +41,7 @@ app.post('/webhook/', function(req, res) {
 			}
 			else if (text.indexOf("google") !== -1){
 				let coordinates = text.slice(text.indexOf("@") + 1)
-				let x_and_y_coordinates = coordinates.slice(0, 4)
+				let x_and_y_coordinates = coordinates.slice(0, -4)
 				let separation = x_and_y_coordinates.indexOf(",")
 				let x = x_and_y_coordinates.slice(0, separation)
 				let y = x_and_y_coordinates.slice(separation)
