@@ -40,7 +40,12 @@ app.post('/webhook/', function(req, res) {
 				sendText(sender, "Can you send me a picture?")
 			}
 			else if (text.indexOf("google") !== -1){
-				let coordinates = text.slice(text.indexOf("@") + 1, -4)
+				let coordinates = text.slice(text.indexOf("@") + 1)
+				let x_and_y_coordinates = coordinates.slice(0, 4)
+				let separation = x_and_y_coordinates.indexOf(",")
+				let x = x_and_y_coordinates.slice(0, separation)
+				let y = x_and_y_coordinates.slice(separation)
+				sendText(sender, x + "," + y)
 			}
 		else {
 			sendText(sender, "I didn't quite catch that")
