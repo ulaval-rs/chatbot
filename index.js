@@ -50,15 +50,18 @@ app.post('/webhook/', function(req, res) {
 				sendText(sender, "X coordinate: " + x)
 				sendText(sender, "Y coordinate: " + y)
 				}
-				else {
+				//else {
 				//sendText(sender, "I didn't quite catch that")
-				var url = 'https://google.com/maps/place/' + text
-				axios.get(url).then(res => {
-					sendText(sender, res.status)
-					}).catch(error => {sendText(sender, error)})
+				//var url = 'https://google.com/maps/place/' + text
+				//axios.get(url).then(res => {
+				//	sendText(sender, res.status)
+				//	}).catch(error => {sendText(sender, error)})
 				//else{
 				//	sendText(sender, "I'm sorry, please re-enter your location")
 				//}
+				//}
+				else {
+					sendText(sender, 'nope')
 				}
 			}
 
@@ -67,11 +70,6 @@ app.post('/webhook/', function(req, res) {
 	res.sendStatus(200)
 
 })
-
-
-
-
-
 
 
 function sendText(sender, text){
