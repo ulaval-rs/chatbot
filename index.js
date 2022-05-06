@@ -44,9 +44,10 @@ app.post('/webhook/', function(req, res) {
 		}
 	}
 	else {
-		sendText(sender, "This is your photo")
-		sendImage(sender, event.message.attachments[0].payload)
-		sendText("Can you send me your geographical coordinates?")
+		//sendText(sender, "This is your photo")
+		//sendImage(sender, event.message.attachments[0].payload)
+		sendText(sender, "Can you send me your geographical coordinates?")
+		sendText(sender, "https://www.google.com/maps")
 		//sendText(sender, String((event.message.attachments[0].payload.url)))
 		//sendText(sender, String(Object.keys(event.message.attachments[0].payload)))
 	}
