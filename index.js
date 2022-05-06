@@ -71,9 +71,11 @@ app.post('/webhook/', function(req, res) {
 		//sendText(sender, String(Object.keys(event.message.attachments[0].payload)))
 	}
 }
-	}
 	res.sendStatus(200)
-})
+	}
+
+
+
 
 function sendText(sender, text){
 	let messageData = {text: text}
