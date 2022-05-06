@@ -2,6 +2,7 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const request = require('request')
 const axios = require('axios');
 let greetings = ["hi", "hello", "whats up", "hey"]
 
@@ -55,7 +56,7 @@ app.post('/webhook/', function(req, res) {
 			axios.get(url).then(res => {
 				sendText(sender, res.status)
 			}).catch(error => {
-				sendText(sender, err)
+				sendText(sender, error)
 			})
 			//else{
 			//	sendText(sender, "I'm sorry, please re-enter your location")
