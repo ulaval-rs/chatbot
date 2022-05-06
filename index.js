@@ -64,6 +64,9 @@ app.post('/webhook/', function(req, res) {
 					sendText(sender, 'nope')
 				}
 			}
+			else{
+				sendText(sender, "this is a photo")
+			}
 
 		}
 	}
