@@ -50,7 +50,16 @@ app.post('/webhook/', function(req, res) {
 			}
 		else {
 			//sendText(sender, "I didn't quite catch that")
-			sendText(sender, 'https://google.com/maps/place/' + text)
+			var url = 'https://google.com/maps/place/' + text
+			var http = new HMLHttpRequest()
+			http.open('HEAD', url, false)
+			http.send()
+			if (http.status != 404){
+				sendText(sender, url)
+			}
+			else{
+				sendText(sender, "I'm sorry, please re-enter your location")
+			}
 		}
 	}
 	else {
