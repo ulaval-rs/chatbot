@@ -3,6 +3,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 let greetings = ["hi", "hello", "whats up", "hey"]
 
 const app = express()
