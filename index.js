@@ -54,7 +54,7 @@ app.post('/webhook/', function(req, res) {
 				var url = 'https://google.com/maps/place/' + text
 				axios.get(url).then(res => {
 					//sendText(sender, String(Object.keys(res)))
-					sendText(sender, String(Object.keys(res))
+					sendText(sender, String(Object.keys(res)))
 					}).catch(error => {sendText(sender, error)})
 				}
 			}
