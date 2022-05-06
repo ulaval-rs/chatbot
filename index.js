@@ -35,13 +35,13 @@ app.post('/webhook/', function(req, res) {
 		if (event.message){
 			if (event.message.text){
 			let text = event.message.text
-			if (greetings.find(element => element === text.toLowerCase())){
+				if (greetings.find(element => element === text.toLowerCase())){
 				sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
-			}
-			else if (text.indexOf("moose") !== -1){
+				}
+				else if (text.indexOf("moose") !== -1){
 				sendText(sender, "Can you send me a picture?")
-			}
-			else if (text.indexOf("google") !== -1){
+				}
+				else if (text.indexOf("google") !== -1){
 				let coordinates = text.slice(text.indexOf("@") + 1)
 				let x_and_y_coordinates = coordinates.slice(0, -4)
 				let separation = x_and_y_coordinates.indexOf(",")
@@ -49,33 +49,25 @@ app.post('/webhook/', function(req, res) {
 				let y = x_and_y_coordinates.slice(separation + 1)
 				sendText(sender, "X coordinate: " + x)
 				sendText(sender, "Y coordinate: " + y)
+				}
+				else {
+				//sendText(sender, "I didn't quite catch that")
+				var url = 'https://google.com/maps/place/' + text
+				axios.get(url).then(res => {
+					sendText(sender, res.status)
+					}).catch(error => {sendText(sender, error)})
+				//else{
+				//	sendText(sender, "I'm sorry, please re-enter your location")
+				//}
+				}
 			}
-		else {
-			//sendText(sender, "I didn't quite catch that")
-			var url = 'https://google.com/maps/place/' + text
-			axios.get(url).then(res => {
-				sendText(sender, res.status)
-			}).catch(error => {
-				sendText(sender, error)
-			})
-			//else{
-			//	sendText(sender, "I'm sorry, please re-enter your location")
-			//}
+
 		}
 	}
-	}
-	else {
-		//sendText(sender, "This is your photo")
-		//sendImage(sender, event.message.attachments[0].payload)
-		sendText(sender, "Can you send me your geographical coordinates?")
-		sendText(sender, "In what city or region did you see the moose?")
-		//sendText(sender, String((event.message.attachments[0].payload.url)))
-		//sendText(sender, String(Object.keys(event.message.attachments[0].payload)))
-	}
+	res.sendStatus(200)
 
-}
-res.sendStatus(200)
-	})
+})
+
 
 
 
