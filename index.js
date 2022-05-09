@@ -45,8 +45,8 @@ app.post('/webhook/', function(req, res) {
 				let coordinates = text.slice(text.indexOf("@") + 1)
 				if(coordinates.indexOf("z") !== 0){
 					sendText(sender, "data found!")
-					coordinates.slice(coordinates.indexOf("z") + 1)
-					sendText(sender, coordinates)
+					let only_coordinates = coordinates.slice(coordinates.indexOf("z") + 1)
+					sendText(sender, only_coordinates)
 				}
 				let x_and_y_coordinates = coordinates.slice(0, -4)
 				let separation = x_and_y_coordinates.indexOf(",")
