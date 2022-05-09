@@ -133,7 +133,7 @@ function sendButtonMessage(sender, text){
 				"buttons":[
 				{
 					"type": "postback",
-					"title": "Send a picture"
+					"title": "Send a picture",
 					"payload": "picture"
 
 				},
