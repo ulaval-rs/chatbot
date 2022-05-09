@@ -59,7 +59,9 @@ app.post('/webhook/', function(req, res) {
 					}).catch(error => {sendText(sender, error)})
 				}
 			}
-			else if (event.postback) {
+
+		}
+		else if (event.postback) {
 				sendText(sender, "whoah")
 				let text = JSON.stringify(event.postback)
 				if (text.toLowerCase() === "send a picture"){
@@ -70,8 +72,6 @@ app.post('/webhook/', function(req, res) {
 					sendText(sender, "https://google.com/maps")
 				}
 			}
-
-		}
 	}
 	res.sendStatus(200)
 
