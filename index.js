@@ -60,6 +60,7 @@ app.post('/webhook/', function(req, res) {
 				}
 			}
 			else if (event.postback) {
+				sendText(sender, "whoah")
 				let text = JSON.stringify(event.postback)
 				if (text.toLowerCase() === "send a picture"){
 					sendText(sender, "Send picture here")
