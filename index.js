@@ -37,9 +37,9 @@ app.post('/webhook/', function(req, res) {
 			if (event.message.text){
 			let text = event.message.text
 				if (greetings.find(element => element === text.toLowerCase())){
-				sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
+				sendText(sender, "Hi! I am your virtual research assistant.")
+				sendButtonMessage(sender, "What can I help you with?")
 				}
-				sendButtonMessage(sender, "What would you like to do?")
 				else if (text.indexOf("google") !== -1){
 				let coordinates = text.slice(text.indexOf("@") + 1)
 				if(coordinates.indexOf("z") !== 0){
