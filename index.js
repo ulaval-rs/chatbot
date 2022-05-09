@@ -44,6 +44,7 @@ app.post('/webhook/', function(req, res) {
 				else if (text.indexOf("google") !== -1){
 					if(text.indexOf("data") !== -1){
 						text.slice(text.indexOf("data") + 1)
+						sendText(sender, "data found")
 					}
 				let coordinates = text.slice(text.indexOf("@") + 1)
 				let x_and_y_coordinates = coordinates.slice(0, -4)
