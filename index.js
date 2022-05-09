@@ -38,9 +38,7 @@ app.post('/webhook/', function(req, res) {
 				if (greetings.find(element => element === text.toLowerCase())){
 				sendText(sender, "Hi! I am your virtual research assistant. What can I help you with?")
 				}
-				else if (text.indexOf("moose") !== -1){
-				sendText(sender, "Can you send me a picture?")
-				}
+				sendButtonMessage(sender, "What would you like to do?")
 				else if (text.indexOf("google") !== -1){
 				let coordinates = text.slice(text.indexOf("@") + 1)
 				if(coordinates.indexOf("z") !== 0){
@@ -54,7 +52,6 @@ app.post('/webhook/', function(req, res) {
 				sendText(sender, "Y coordinate: " + y)
 				}
 				else {
-				sendText(sender, "I didn't quite catch that")
 				var url = 'https://google.com/maps/place/' + text
 				axios.get(url).then(res => {
 					sendText(sender, "Can you be more specific? Place your position on the map")
@@ -62,8 +59,15 @@ app.post('/webhook/', function(req, res) {
 					}).catch(error => {sendText(sender, error)})
 				}
 			}
-			else{
-				sendText(sender, "this is a photo")
+			else if (event.postback) {
+				let text = JSON.stringify(event.postback)
+				if (text === "picture"){
+					sendText(sender, "Send picture here")
+				}
+				else if (text === "coordinates"){
+					sendText(sender, "Here is a link to google maps. If you would like, you can send back a google maps link with your location, or you can give me a region.")
+					sendText(sender, "https://google.com/maps")
+				}
 			}
 
 		}
@@ -116,6 +120,30 @@ function sendImage(sender, payload){
 		}
 	}
 })
+}
+
+function sendButtonMessage(sender, text){
+	let messageData = {
+		"attachment" : {
+			"type":"template",
+			"payload": {
+				"template_type":"button",
+				"text":text,
+				"buttons":[
+				{
+					"type": "postback",
+					"title": "Send a picture"
+					"payload": "picture"
+
+				},
+				{
+					"type": "postback",
+					"title": "Send geographical data",
+					"payload": "coordinates"
+				}]
+			}
+		}
+	}
 }
 
 app.listen(app.get('port'), function(){
