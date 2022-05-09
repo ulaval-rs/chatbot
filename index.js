@@ -61,10 +61,10 @@ app.post('/webhook/', function(req, res) {
 			}
 			else if (event.postback) {
 				let text = JSON.stringify(event.postback)
-				if (text === "picture"){
+				if (text.toLowerCase() === "send a picture"){
 					sendText(sender, "Send picture here")
 				}
-				else if (text === "coordinates"){
+				else if (text.toLowerCase() === "send geographical data"){
 					sendText(sender, "Here is a link to google maps. If you would like, you can send back a google maps link with your location, or you can give me a region.")
 					sendText(sender, "https://google.com/maps")
 				}
