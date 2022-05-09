@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const request = require('request')
 const axios = require('axios');
 let greetings = ["hi", "hello", "whats up", "hey"]
+let regions = ["Bas St-Laurent", "Saguenay Lac St-Jean", "Capitale-Nationale", "Mauricie", "Estrie", "Montreal", "Outaouais"]
 
 const app = express()
 app.set('port', (process.env.PORT || 5000))
@@ -54,8 +55,8 @@ app.post('/webhook/', function(req, res) {
 				sendText(sender, "I didn't quite catch that")
 				var url = 'https://google.com/maps/place/' + text
 				axios.get(url).then(res => {
-					//sendText(sender, String(Object.keys(res)))
-					sendText(sender, String(res.data))
+					sendText(sender, "Can you be more specific? Place your position on the map")
+					sendText(sender, url)
 					}).catch(error => {sendText(sender, error)})
 				}
 			}
