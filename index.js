@@ -18,7 +18,7 @@ app.get('/', function(req, res){
 	res.send('Hello! I am a research helper. What would you like to share?')
 })
 
-let token = "EABK5DqeVQKcBAP1Vo57lcbAnWu5mGcYLrMBfXpaFzO3LJLVII4UEgYdEkGC686fbABbY8y2TLSRia0mI4yJ4vReyHADPZBEVbt8dcjp2C3fVZCVnsxBO1T0BYAmpUNM7ni69OGdbV6GACC9lhOTi7e5IjHN3ZChLFlp9jYCTYIwGQUze12XM1gFh6mZBDSnDisZB7ZAY0ZBegZDZD"
+let token = process.env.TOKEN
 
 app.get('/webhook/', function(req, res) {
 	if (req.query['hub.verify_token'] === "moose"){
