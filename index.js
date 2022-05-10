@@ -109,13 +109,13 @@ function sendButtonMessage(sender, text){
 				"text":text,
 				"buttons":[
 				{
-					"type": "postback",
+					"type": "message",
 					"title": "Send a picture",
 					"payload": "picture"
 
 				},
 				{
-					"type": "postback",
+					"type": "message",
 					"title": "Send geographical data",
 					"payload": "coordinates"
 				}]
