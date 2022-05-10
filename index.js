@@ -59,10 +59,10 @@ app.post('/webhook/', function(req, res) {
 					}).catch(error => {sendText(sender, error)})
 				}
 			}
-
-		}
-		else {
+			else {
 				sendText(sender, Object.keys(event))
+			}
+
 		}
 	}
 	res.sendStatus(200)
