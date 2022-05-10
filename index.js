@@ -59,7 +59,7 @@ app.post('/webhook/', function(req, res) {
 					}).catch(error => {sendText(sender, error)})
 				}
 			}
-			else {
+			else if (event.messaging_postbacks){
 				sendText(sender, "Thanks for the picture!")
 			}
 
