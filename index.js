@@ -62,7 +62,7 @@ app.post('/webhook/', function(req, res) {
 
 		}
 		else {
-				sendText(sender, String(event))
+				sendText(sender, String(Object.keys(event)))
 			}
 	}
 	res.sendStatus(200)
