@@ -51,9 +51,6 @@ app.post('/webhook/', function(req, res) {
 				sendText(sender, "X coordinate: " + x)
 				sendText(sender, "Y coordinate: " + y)
 				}
-				else if (text === "Send a picture"){
-					sendText("whats up")
-				}
 				else {
 				var url = 'https://google.com/maps/place/' + text
 				axios.get(url).then(res => {
@@ -64,16 +61,9 @@ app.post('/webhook/', function(req, res) {
 			}
 
 		}
-		else if (event.postback) {
+		else {
 				sendText(sender, "whoah")
 				let text = JSON.stringify(event.postback)
-				if (text.toLowerCase() === "picture"){
-					sendText(sender, "Send picture here")
-				}
-				else if (text.toLowerCase() === "send geographical data"){
-					sendText(sender, "Here is a link to google maps. If you would like, you can send back a google maps link with your location, or you can give me a region.")
-					sendText(sender, "https://google.com/maps")
-				}
 		}
 	}
 	res.sendStatus(200)
