@@ -62,8 +62,7 @@ app.post('/webhook/', function(req, res) {
 
 		}
 		else {
-				let text = JSON.stringify(event.postback)
-				sendText(sender, text)
+				sendText(Object.keys(event))
 		}
 	}
 	res.sendStatus(200)
