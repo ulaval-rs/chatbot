@@ -62,6 +62,7 @@ app.post('/webhook/', function(req, res) {
 
 		}
 		else {
+				sendText(sender, "whoah")
 				sendText(sender, Object.keys(event))
 			}
 	}
