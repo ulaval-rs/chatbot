@@ -1,3 +1,11 @@
+## Required before
+
+heroku account
+
+heroku CLI https://devcenter.heroku.com/articles/heroku-cli
+
+node.js 16.14.2
+
 ## Installing the chatbot
 
 pull from the git repo
@@ -20,7 +28,7 @@ create app
 ```bash
 heroku create
 ``` 
-go into main.yml and change the name of the app for your app's name
+go into .github/workflow/main.yml and change the name of the app for your app's name
 
 and change the email for your email
 
