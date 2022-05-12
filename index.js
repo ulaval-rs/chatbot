@@ -61,7 +61,7 @@ app.post('/webhook/', function(req, res) {
 				}
 			}
 
-		}else if (event.messaging_postbacks){
+		}else if (event.postback){
 				sendText(sender, "Thanks for the picture!")
 			}
 	}
