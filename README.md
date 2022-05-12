@@ -20,10 +20,10 @@ create app
 ```bash
 heroku create
 ``` 
-push the code to heroku
-```bash
-git push heroku master
-``` 
+go into main.yml and change the name of the app for your app's name
+
+and change the email for your email
+
 
 ## Link heroku app and facebook page
 go to developers.facebook.com and create a messenger app
@@ -48,12 +48,4 @@ curl -X POST "https://graph.facebook.com/v2.6/me/subscribed_apps?subscribed_fiel
 
 now if you message your page you should get a response!
 
-## To change
-
-commit with git
-
-push with this command:
-```bash
-git push heroku master
-``` 
 
