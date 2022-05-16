@@ -100,22 +100,32 @@ and change the name of the app for your app's name
 
 and change the email for your email
 
-
 ### Link heroku app and facebook page
-1. go to developers.facebook.com and create a messenger app
-    - if you do not have a facebook page create one
+1. Choose a verification token. Set it in the heroku config like this
 
-2. generate token and put it in the app in the command line
+``` 
+heroku config:set VERIFY_TOKEN={your_token}
+``` 
+
+2. go to developers.facebook.com and create a messenger app 
+   - if you do not have a facebook page to be used create one
+   - choose a 'Business' type app 
+   - when asked to 'add products to your app', choose Messenger
+
+
+
+3. generate web token and put it in the app in the command line
 ```bash
 heroku config:set TOKEN={your token here}
 ``` 
 the callback url asked for is the url of your heroku project
 
-the verify token is "moose"
 
-3. subscribe to messages, messaging_postbacks, messaging_optins and messaging_deliveries
+the verification token is the token you chose in step 1
 
-4. use a curl command to test connection to facebook page
+4. subscribe to messages, messaging_postbacks, messaging_optins and messaging_deliveries
+
+5use a curl command to test connection to facebook page
 ```bash
 curl -X POST "https://graph.facebook.com/v2.6/me/subscribed_apps?subscribed_fields=message_deliveries&messages&messaging_optins&messaging_postbacks&access_token={your secret token here}"
 
