@@ -133,7 +133,7 @@ function sendRequest(sender, messageData){
 		json: {
 			recipient: {id: sender},
 			message: messageData,
-		}, function(error, response, body){
+		}, function(error, response){
 			if (error) {
 				console.log("sending error")
 			}

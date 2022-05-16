@@ -3,10 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="7fa355e0-3ded-4f23-9837-430d2e2cdf99" name="Changes" comment="">
 <<<<<<< HEAD
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
 =======
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
 >>>>>>> 654aa2f (added readme)
+=======
+      <change beforePath="$PROJECT_DIR$/.github/workflows/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/main.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+>>>>>>> b02a6e7 (added config var data in the main.yml)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,9 +41,13 @@
       <workItem from="1651685697740" duration="19000" />
       <workItem from="1651758481901" duration="5000" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       <workItem from="1652705451199" duration="663000" />
 >>>>>>> 06045fe (fixed readme)
+=======
+      <workItem from="1652705451199" duration="1257000" />
+>>>>>>> 7975e0a (added config var data in the main.yml)
     </task>
     <servers />
   </component>
