@@ -111,9 +111,7 @@ heroku config:set VERIFY_TOKEN={your_token}
    - if you do not have a facebook page to be used create one
    - choose a 'Business' type app 
    - when asked to 'add products to your app', choose Messenger
-
-
-
+   
 3. generate web token and put it in the app in the command line
 ```bash
 heroku config:set TOKEN={your token here}
