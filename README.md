@@ -28,7 +28,12 @@ heroku login
 ```bash
 heroku create
 ``` 
-3. go into .github/workflow/main.yml and change the name of the app for your app's name
+3. go into 
+``` 
+.github/workflows/main.yml
+``` 
+
+and change the name of the app for your app's name
 
 and change the email for your email
 
