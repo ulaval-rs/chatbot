@@ -22,7 +22,7 @@ app.get('/', function(req, res){
 let token = process.env.TOKEN
 
 app.get('/webhook/', function(req, res) {
-	if (req.query['hub.verify_token'] === "moose"){
+	if (req.query['hub.verify_token'] === process.env.VERIFY_TOKEN){
 		res.send(req.query['hub.challenge'])
 	}
 	res.send("Wrong token")
