@@ -117,7 +117,8 @@ heroku config:set VERIFY_TOKEN={your_token}
 heroku config:set TOKEN={your token here}
 ``` 
 
-add the token to github secrets as well: go to your repo settings -> secrets -> actions and add te token under HEROKU_API_KEY
+add the token to github secrets as well: go to your repo settings -> secrets -> actions and add the token under HEROKU_API_KEY
+
 the callback url asked for is the url of your heroku project
 
 
