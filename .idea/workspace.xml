@@ -14,6 +14,7 @@
 =======
 >>>>>>> 585b86e (verify_token outside of code)
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
 >>>>>>> b02a6e7 (added config var data in the main.yml)
     </list>
@@ -30,8 +31,20 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+<<<<<<< HEAD
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../chatbot2" />
+=======
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+>>>>>>> bb60ea5 (added details about ngrok to readme)
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="NodeJSConfigurationType" nameIsGenerated="true" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -46,6 +59,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       <workItem from="1652705451199" duration="663000" />
 >>>>>>> 06045fe (fixed readme)
@@ -55,6 +69,14 @@
 =======
       <workItem from="1652705451199" duration="2464000" />
 >>>>>>> d27fb9b (verify_token outside of code)
+=======
+      <workItem from="1652705451199" duration="3085000" />
+      <workItem from="1652800510068" duration="1618000" />
+      <workItem from="1652810196039" duration="1372000" />
+      <workItem from="1652878713443" duration="595000" />
+      <workItem from="1652881254318" duration="3013000" />
+      <workItem from="1652886460404" duration="2765000" />
+>>>>>>> bb60ea5 (added details about ngrok to readme)
     </task>
     <servers />
   </component>

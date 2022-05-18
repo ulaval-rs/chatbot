@@ -22,48 +22,46 @@ app.get('/', function(req, res){
 let token = process.env.TOKEN
 
 app.get('/webhook/', function(req, res) {
-	if (req.query['hub.verify_token'] === process.env.VERIFY_TOKEN){
-		res.send(req.query['hub.challenge'])
-	}
-	res.send("Wrong token")
+	res.send(req.query['hub.challenge'])
 })
 
 app.post('/webhook/', function(req, res) {
 	let messaging_events = req.body.entry[0].messaging
 	for (let i = 0; i < messaging_events.length; i++){
 		let event = messaging_events[i]
+		console.log(String(Object.keys(event)))
 		let sender = event.sender.id
 		if (event.message){
 			if (event.message.text){
-			let text = event.message.text
+				let text = event.message.text
 				if (greetings.find(element => element === text.toLowerCase())){
-				sendText(sender, "Hi! I am your virtual research assistant.")
-				sendButtonMessage(sender, "What can I help you with?")
+					sendText(sender, "Hi! I am your virtual research assistant.")
+					sendButtonMessage(sender, "What can I help you with?")
 				}
 				else if (text.indexOf("google") !== -1){
-				let coordinates = text.slice(text.indexOf("@") + 1)
-				if(coordinates.indexOf("z") !== 0){
+					let coordinates = text.slice(text.indexOf("@") + 1)
+					if(coordinates.indexOf("z") !== 0){
 					coordinates = coordinates.slice(0, coordinates.indexOf("z") + 1)
-				}
-				let x_and_y_coordinates = coordinates.slice(0, -4)
-				let separation = x_and_y_coordinates.indexOf(",")
-				let x = x_and_y_coordinates.slice(0, separation)
-				let y = x_and_y_coordinates.slice(separation + 1)
-				sendText(sender, "X coordinate: " + x)
-				sendText(sender, "Y coordinate: " + y)
+					}
+					let x_and_y_coordinates = coordinates.slice(0, -4)
+					let separation = x_and_y_coordinates.indexOf(",")
+					let x = x_and_y_coordinates.slice(0, separation)
+					let y = x_and_y_coordinates.slice(separation + 1)
+					sendText(sender, "X coordinate: " + x)
+					sendText(sender, "Y coordinate: " + y)
 				}
 				else {
-				var url = 'https://google.com/maps/place/' + text
-				axios.get(url).then(res => {
-					sendText(sender, "Can you be more specific? Place your position on the map")
-					sendText(sender, url)
-					}).catch(error => {sendText(sender, error)})
+					var url = 'https://google.com/maps/place/' + text
+					axios.get(url).then(res => {
+						sendText(sender, "Can you be more specific? Place your position on the map")
+						sendText(sender, url)
+						}).catch(error => {sendText(sender, error)})
 				}
 			}
 
 		}else if (event.postback){
 				sendText(sender, "Thanks for the picture!")
-			}
+		}
 	}
 	res.sendStatus(200)
 
