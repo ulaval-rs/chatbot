@@ -19,7 +19,7 @@ app.get('/', function(req, res){
 })
 
 
-token = process.env.TOKEN
+let token = process.env.TOKEN
 
 app.get('/webhook/', function(req, res) {
 	if (req.query['hub.verify_token'] === "moose"){
