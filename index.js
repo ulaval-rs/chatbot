@@ -3,145 +3,115 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
-const axios = require('axios');
-let greetings = ["hi", "hello", "whats up", "hey"]
-let regions = ["Bas St-Laurent", "Saguenay Lac St-Jean", "Capitale-Nationale", "Mauricie", "Estrie", "Montreal", "Outaouais"]
 
 const app = express()
+
 app.set('port', (process.env.PORT || 5000))
 
-
+// Allows us to process the data
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-app.get('/', function(req, res){
-	res.send('Hello! I am a research helper. What would you like to share?')
+// ROUTES
+
+app.get('/', function(req, res) {
+    res.send("Hi I am a chatbot")
 })
 
-
 let token = process.env.TOKEN
+let greetings = ["hi", "hello", "whats up", "hey"]
+// Facebook
 
 app.get('/webhook/', function(req, res) {
-	res.send(req.query['hub.challenge'])
+    console.log("got em")
+    res.send(req.query['hub.challenge'])
 })
 
 app.post('/webhook/', function(req, res) {
-	let messaging_events = req.body.entry[0].messaging
-	for (let i = 0; i < messaging_events.length; i++){
-		let event = messaging_events[i]
-		console.log(String(Object.keys(event)))
-		let sender = event.sender.id
-		if (event.message){
-			if (event.message.text){
-				let text = event.message.text
-				if (greetings.find(element => element === text.toLowerCase())){
-					sendText(sender, "Hi! I am your virtual research assistant.")
-					sendButtonMessage(sender, "What can I help you with?")
-				}
-				else if (text.indexOf("google") !== -1){
-					let coordinates = text.slice(text.indexOf("@") + 1)
-					if(coordinates.indexOf("z") !== 0){
-					coordinates = coordinates.slice(0, coordinates.indexOf("z") + 1)
-					}
-					let x_and_y_coordinates = coordinates.slice(0, -4)
-					let separation = x_and_y_coordinates.indexOf(",")
-					let x = x_and_y_coordinates.slice(0, separation)
-					let y = x_and_y_coordinates.slice(separation + 1)
-					sendText(sender, "X coordinate: " + x)
-					sendText(sender, "Y coordinate: " + y)
-				}
-				else {
-					var url = 'https://google.com/maps/place/' + text
-					axios.get(url).then(res => {
-						sendText(sender, "Can you be more specific? Place your position on the map")
-						sendText(sender, url)
-						}).catch(error => {sendText(sender, error)})
-				}
-			}
-
-		}else if (event.postback){
-				sendText(sender, "Thanks for the picture!")
-		}
-	}
-	res.sendStatus(200)
-
+    let messaging_events = req.body.entry[0].messaging
+    for (let i = 0; i < messaging_events.length; i++) {
+        let event = messaging_events[i]
+        let sender = event.sender.id
+        if (event.message) {
+            if (event.message.text) {
+                let text = event.message.text
+                decideMessage(sender, text)
+            }
+            else {
+                sendText(sender, "Thanks for the picture!")
+            }
+        }
+        if (event.postback){
+            let text = JSON.stringify(event.postback.payload)
+            console.log(text)
+            decideMessage(sender, text)
+        }
+    }
+    res.sendStatus(200)
 })
 
-
-function sendText(sender, text){
-	let messageData = {text: text}
-	sendRequest(sender, messageData)
+function decideMessage(sender, text1){
+    let text = text1.toLowerCase()
+    if (text.includes("picture")){
+        sendText(sender, "Cool! Send a picture!")
+    }else if (text.includes("coordinates")){
+        sendText(sender, "Place your coordinates on this map and send it back")
+        var url = 'https://google.com/maps/place/Quebec'
+        sendText(sender, url)
+    }
+    if (greetings.find(element => element === text)){
+        sendButtonMessage(sender, "Hi! I am your virtual research assistant. How can I help you?")
+    }
 }
 
-function sendImage(sender, payload){
-	let messageData = {
-		"attachment": {
-			"type": "image",
-			"payload": payload
-		}
-	}
-	request({
-		url : "https://graph.facebook.com/v2.6/me/messages",
-		qs: {access_token: token},
-		method: "POST",
-		json: {
-			recipient: {id: sender},
-			message: messageData,
-		}, function(error, response, body){
-			if (error) {
-				console.log("sending error")
-			}
-		 else if (response.body.error){
-			console.log("response body error")
-		}
-	}
-})
+function sendText(sender, text) {
+    let messageData = {text: text}
+    sendRequest(sender, messageData)
 }
 
 function sendButtonMessage(sender, text){
-	let messageData = {
-		"attachment" : {
-			"type":"template",
-			"payload": {
-				"template_type":"button",
-				"text":text,
-				"buttons":[
-				{
-					"type": "postback",
-					"title": "Send a picture",
-					"payload": "picture"
-
-				},
-				{
-					"type": "postback",
-					"title": "Send geographical data",
-					"payload": "coordinates"
-				}]
-			}
-		}
-	}
-	sendRequest(sender, messageData)
+    let messageData = {
+        "attachment":{
+            "type":"template",
+            "payload":{
+                "template_type":"button",
+                "text":text,
+                "buttons":[
+                    {
+                        "type":"postback",
+                        "title":"Send a picture",
+                        "payload":"picture"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "Send geographical coordinates",
+                        "payload" : "coordinates"
+                    }
+                ]
+            }
+        }
+    }
+    sendRequest(sender, messageData)
 }
 
 function sendRequest(sender, messageData){
-	request({
-		url : "https://graph.facebook.com/v2.6/me/messages",
-		qs: {access_token: token},
-		method: "POST",
-		json: {
-			recipient: {id: sender},
-			message: messageData,
-		}, function(error, response){
-			if (error) {
-				console.log("sending error")
-			}
-		 else if (response.body.error){
-			console.log("response body error")
-		}
-	}
-})
+    request({
+        url: "https://graph.facebook.com/v13.0/me/messages",
+        qs : {access_token: token},
+        method: "POST",
+        json: {
+            recipient: {id: sender},
+            message : messageData,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log("sending error")
+        } else if (response.body.error) {
+            console.log("response body error")
+        }
+    })
 }
 
-app.listen(app.get('port'), function(){
-	console.log("running: port")
+app.listen(app.get('port'), function() {
+    console.log("running: port")
 })
