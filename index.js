@@ -8,11 +8,9 @@ const app = express()
 
 app.set('port', (process.env.PORT || 5000))
 
-// Allows us to process the data
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-// ROUTES
 
 app.get('/', function(req, res) {
     res.send("Hi I am a chatbot")
@@ -20,10 +18,8 @@ app.get('/', function(req, res) {
 
 let token = process.env.TOKEN
 let greetings = ["hi", "hello", "whats up", "hey"]
-// Facebook
 
 app.get('/webhook/', function(req, res) {
-    console.log("got em")
     res.send(req.query['hub.challenge'])
 })
 
@@ -43,7 +39,6 @@ app.post('/webhook/', function(req, res) {
         }
         if (event.postback){
             let text = JSON.stringify(event.postback.payload)
-            console.log(text)
             decideMessage(sender, text)
         }
     }
