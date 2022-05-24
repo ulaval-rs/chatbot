@@ -48,11 +48,15 @@ app.post('/webhook/', function(req, res) {
 function decideMessage(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("picture")){
-        sendText(sender, "Cool! Send a picture!")
+        sendText(sender, "Do you like this moose?")
+        sendMediaMessage(sender, "Here is the text")
     }else if (text.includes("coordinates")){
         sendText(sender, "Place your coordinates on this map and send it back")
         var url = 'https://google.com/maps/place/Quebec'
         sendText(sender, url)
+    }
+    else if (text.includes("moose")){
+        sendText(sender, "cool, me too")
     }
     if (greetings.find(element => element === text)){
         sendButtonMessage(sender, "Hi! I am your virtual research assistant. How can I help you?")
@@ -89,6 +93,32 @@ function sendButtonMessage(sender, text){
     sendRequest(sender, messageData)
 }
 
+function sendMediaMessage(sender, text){
+    let messageData = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "media",
+                "elements": [
+                    {
+                        "media_type": "image",
+                        "url": "https://www.facebook.com/102237832502478/photos/a.106534478739480/106534455406149/",
+                        "buttons": [
+                            {
+                                "type": "postback",
+                                "title": "I like this moose",
+                                "payload": "moose"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+    sendRequest(sender, messageData)
+}
+
+
 function sendRequest(sender, messageData){
     request({
         url: "https://graph.facebook.com/v13.0/me/messages",
@@ -102,7 +132,7 @@ function sendRequest(sender, messageData){
         if (error) {
             console.log("sending error")
         } else if (response.body.error) {
-            console.log("response body error")
+            console.log(String(response.body.error.message))
         }
     })
 }
