@@ -3,6 +3,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
+const axios = require('axios')
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.get('/', function(req, res) {
 
 let token = process.env.TOKEN
 let greetings = ["hi", "hello", "whats up", "hey"]
+let users = []
 
 app.get('/webhook/', function(req, res) {
     res.send(req.query['hub.challenge'])
@@ -28,6 +30,7 @@ app.post('/webhook/', function(req, res) {
     for (let i = 0; i < messaging_events.length; i++) {
         let event = messaging_events[i]
         let sender = event.sender.id
+        //getStartedButton(sender)
         if (event.message) {
             if (event.message.text) {
                 let text = event.message.text
@@ -58,8 +61,25 @@ function decideMessage(sender, text1){
     else if (text.includes("moose")){
         sendText(sender, "cool, me too")
     }
+    else if (text.includes("yes")){
+        users.push(sender)
+        sendText(sender, "Cool! You are now added")
+        sendButtonMessage(sender, "How can I help you today?")
+    }
+    else if (text.includes(("no"))){
+        sendText(sender, "Okay. Let me know if you change your mind!")
+    }
     if (greetings.find(element => element === text)){
-        sendButtonMessage(sender, "Hi! I am your virtual research assistant. How can I help you?")
+        axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
+            .then((response) => {
+                if (users.find(element => element === sender)){
+                    sendButtonMessage(sender, `Welcome back ${response.data.first_name}, how can I help you today?`)
+                }
+                else {
+                    sendConsentButtonMessage(sender, `Hello ${response.data.first_name}, to continue, please accept to be added to the research network`)
+                }
+            })
+
     }
 }
 
@@ -85,6 +105,31 @@ function sendButtonMessage(sender, text){
                         "type": "postback",
                         "title": "Send geographical coordinates",
                         "payload" : "coordinates"
+                    }
+                ]
+            }
+        }
+    }
+    sendRequest(sender, messageData)
+}
+
+function sendConsentButtonMessage(sender, text){
+    let messageData = {
+        "attachment":{
+            "type":"template",
+            "payload":{
+                "template_type":"button",
+                "text":text,
+                "buttons":[
+                    {
+                        "type":"postback",
+                        "title":"I accept",
+                        "payload":"yes"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "I do not accept >:(",
+                        "payload" : "no"
                     }
                 ]
             }
@@ -134,6 +179,29 @@ function sendRequest(sender, messageData){
         } else if (response.body.error) {
             console.log(String(response.body.error.message))
         }
+    })
+}
+
+function getStartedButton(){
+    request({
+        url: "https://graph.facebook.com/v13.0/me/messenger_profile",
+        qs: {access_token: token},
+        method: "POST",
+        json: {
+            greeting: [
+                {
+                    "locale":"default",
+                    "text":"Hello!"
+                }
+            ]
+    }
+
+        }, function(error, response, body) {
+            if (error) {
+                console.log("sending error")
+            } else if (response.body.error) {
+                console.log(String(response.body.error.message))
+            }
     })
 }
 
