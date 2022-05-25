@@ -20,6 +20,10 @@ app.get('/', function(req, res) {
 let token = process.env.TOKEN
 let greetings = ["hi", "hello", "whats up", "hey"]
 let users = []
+let opening_choices = ["Send a picture", "Send geographical coordinates"]
+let opening_payloads = ["picture", "coordinates"]
+let consent_choices = ["I consent", "I do not consent >:("]
+let consent_payloads = ["yes", "no"]
 
 app.get('/webhook/', function(req, res) {
     res.send(req.query['hub.challenge'])
@@ -64,7 +68,7 @@ function decideMessage(sender, text1){
     else if (text.includes("yes")){
         users.push(sender)
         sendText(sender, "Cool! You are now added")
-        sendButtonMessage(sender, "How can I help you today?")
+        sendButtonMessage(sender, "How can I help you today?", opening_choices, opening_payloads)
     }
     else if (text.includes(("no"))){
         sendText(sender, "Okay. Let me know if you change your mind!")
@@ -73,10 +77,12 @@ function decideMessage(sender, text1){
         axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
             .then((response) => {
                 if (users.find(element => element === sender)){
-                    sendButtonMessage(sender, `Welcome back ${response.data.first_name}, how can I help you today?`)
+                    sendButtonMessage(sender, `Welcome back ${response.data.first_name}, how can I help you today?`,
+                        opening_choices, opening_payloads)
                 }
                 else {
-                    sendConsentButtonMessage(sender, `Hello ${response.data.first_name}, to continue, please accept to be added to the research network`)
+                    sendButtonMessage(sender, `Hello ${response.data.first_name}, to continue, please accept to be added to the research network`,
+                        consent_choices, consent_payloads)
                 }
             })
 
@@ -88,7 +94,7 @@ function sendText(sender, text) {
     sendRequest(sender, messageData)
 }
 
-function sendButtonMessage(sender, text){
+function sendButtonMessage(sender, text, titles, payloads){
     let messageData = {
         "attachment":{
             "type":"template",
@@ -98,38 +104,13 @@ function sendButtonMessage(sender, text){
                 "buttons":[
                     {
                         "type":"postback",
-                        "title":"Send a picture",
-                        "payload":"picture"
+                        "title": titles[0],
+                        "payload":payloads[0]
                     },
                     {
                         "type": "postback",
-                        "title": "Send geographical coordinates",
-                        "payload" : "coordinates"
-                    }
-                ]
-            }
-        }
-    }
-    sendRequest(sender, messageData)
-}
-
-function sendConsentButtonMessage(sender, text){
-    let messageData = {
-        "attachment":{
-            "type":"template",
-            "payload":{
-                "template_type":"button",
-                "text":text,
-                "buttons":[
-                    {
-                        "type":"postback",
-                        "title":"I accept",
-                        "payload":"yes"
-                    },
-                    {
-                        "type": "postback",
-                        "title": "I do not accept >:(",
-                        "payload" : "no"
+                        "title": titles[1],
+                        "payload" : payloads[1]
                     }
                 ]
             }
