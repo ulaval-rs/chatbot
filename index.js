@@ -48,10 +48,6 @@ app.post('/webhook/', function(req, res) {
         }
         if (event.postback){
             let text = JSON.stringify(event.postback.payload)
-            if( text === "yes"){
-                users.push(sender)
-            }
-            runSample(text, sender)
             decideMessage(sender, text)
         }
     }
@@ -71,7 +67,6 @@ function decideMessage(sender, text1){
     else if (text.includes("moose")){
         sendText(sender, "cool, me too")
     }
-
     if (text==="welcome"){
         axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
             .then((response) => {
@@ -85,6 +80,11 @@ function decideMessage(sender, text1){
                 }
             })
 
+    }
+    else if (text.includes("yes")){
+        users.push(sender)
+        sendButtonMessage(sender, `Okay, you're added! How can I help you today?`,
+            opening_choices, opening_payloads)
     }
 }
 
