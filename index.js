@@ -35,11 +35,10 @@ app.post('/webhook/', function(req, res) {
     for (let i = 0; i < messaging_events.length; i++) {
         let event = messaging_events[i]
         let sender = event.sender.id
-        //getStartedButton(sender)
         if (event.message) {
             if (event.message.text) {
                 let text = event.message.text
-                runSample(text, sender)
+                //here we can have a switch case that determines where we are in the conversation
                 decideMessage(sender, text)
             }
             else {
@@ -56,17 +55,6 @@ app.post('/webhook/', function(req, res) {
 
 function decideMessage(sender, text1){
     let text = text1.toLowerCase()
-    if (text.includes("picture")){
-        sendText(sender, "Do you like this moose?")
-        sendMediaMessage(sender, "Here is the text")
-    }else if (text.includes("coordinates")){
-        sendText(sender, "Place your coordinates on this map and send it back")
-        var url = 'https://google.com/maps/place/Quebec'
-        sendText(sender, url)
-    }
-    else if (text.includes("moose")){
-        sendText(sender, "cool, me too")
-    }
     if (text==="welcome"){
         axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
             .then((response) => {
@@ -81,12 +69,44 @@ function decideMessage(sender, text1){
             })
 
     }
-    else if (text.includes("yes")){
+}
+
+function decideConsentStatus(sender, text1){
+    let text = text1.toLowerCase()
+    if (text.includes("yes")){
         users.push(sender)
         sendButtonMessage(sender, `Okay, you're added! How can I help you today?`,
             opening_choices, opening_payloads)
     }
+    else {
+        sendText(sender, "Okay, come back if you change your mind")
+    }
 }
+
+function decideWhatActionToTake(sender, text1){
+    let text = text1.toLowerCase()
+    if (text.includes("picture")){
+        sendText(sender, "Do you like this moose?")
+        sendMediaMessage(sender, "Here is the text")
+    }else if (text.includes("coordinates")){
+        sendText(sender, "Place your coordinates on this map and send it back")
+        var url = 'https://google.com/maps/place/Quebec'
+        sendText(sender, url)
+    }
+}
+
+function parseLocation(sender, text1){
+    //TODO
+}
+
+function parseTime(sender, text1){
+    //TODO
+}
+
+function parsePicture(sender, image){
+    //TODO
+}
+
 
 function sendText(sender, text) {
     let messageData = {text: text}
