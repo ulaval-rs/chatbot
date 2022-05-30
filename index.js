@@ -25,6 +25,7 @@ let opening_choices = ["Send a picture", "Send geographical coordinates"]
 let opening_payloads = ["picture", "coordinates"]
 let consent_choices = ["I consent", "I do not consent >:("]
 let consent_payloads = ["yes", "no"]
+let current_context = "welcome"
 
 app.get('/webhook/', function(req, res) {
     res.send(req.query['hub.challenge'])
@@ -72,6 +73,7 @@ function decideMessage(sender, text1){
 }
 
 function decideConsentStatus(sender, text1){
+    current_context = "consent"
     let text = text1.toLowerCase()
     if (text.includes("yes")){
         users.push(sender)
@@ -84,6 +86,7 @@ function decideConsentStatus(sender, text1){
 }
 
 function decideWhatActionToTake(sender, text1){
+    current_context = "first action"
     let text = text1.toLowerCase()
     if (text.includes("picture")){
         sendText(sender, "Do you like this moose?")
@@ -96,14 +99,17 @@ function decideWhatActionToTake(sender, text1){
 }
 
 function parseLocation(sender, text1){
+    current_context = "location"
     //TODO
 }
 
 function parseTime(sender, text1){
+    current_context = "time"
     //TODO
 }
 
 function parsePicture(sender, image){
+    current_context = "picture"
     //TODO
 }
 
