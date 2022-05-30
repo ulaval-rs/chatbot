@@ -4,6 +4,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const axios = require('axios')
+const dialogflow = require('@google-cloud/dialogflow');
+const uuid = require('uuid');
 
 const app = express()
 
@@ -11,14 +13,13 @@ app.set('port', (process.env.PORT || 5000))
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
-
+const sessionClient = new dialogflow.SessionsClient();
 
 app.get('/', function(req, res) {
     res.send("Hi I am a chatbot")
 })
 
 let token = process.env.TOKEN
-let greetings = ["hi", "hello", "whats up", "hey"]
 let users = []
 let opening_choices = ["Send a picture", "Send geographical coordinates"]
 let opening_payloads = ["picture", "coordinates"]
@@ -38,6 +39,7 @@ app.post('/webhook/', function(req, res) {
         if (event.message) {
             if (event.message.text) {
                 let text = event.message.text
+                runSample(text, sender)
                 decideMessage(sender, text)
             }
             else {
@@ -46,6 +48,10 @@ app.post('/webhook/', function(req, res) {
         }
         if (event.postback){
             let text = JSON.stringify(event.postback.payload)
+            if( text === "yes"){
+                users.push(sender)
+            }
+            runSample(text, sender)
             decideMessage(sender, text)
         }
     }
@@ -65,15 +71,8 @@ function decideMessage(sender, text1){
     else if (text.includes("moose")){
         sendText(sender, "cool, me too")
     }
-    else if (text.includes("yes")){
-        users.push(sender)
-        sendText(sender, "Cool! You are now added")
-        sendButtonMessage(sender, "How can I help you today?", opening_choices, opening_payloads)
-    }
-    else if (text.includes(("no"))){
-        sendText(sender, "Okay. Let me know if you change your mind!")
-    }
-    if (greetings.find(element => element === text)){
+
+    if (text==="welcome"){
         axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
             .then((response) => {
                 if (users.find(element => element === sender)){
@@ -189,3 +188,42 @@ function getStartedButton(){
 app.listen(app.get('port'), function() {
     console.log("running: port")
 })
+
+async function runSample(text, sender, projectId = 'researchassistant') {
+    // A unique identifier for the given session
+    const sessionId = uuid.v4();
+
+    // Create a new session
+    const sessionClient = new dialogflow.SessionsClient();
+    const sessionPath = sessionClient.projectAgentSessionPath(
+        projectId,
+        sessionId
+    );
+
+    // The text query request.
+    const request = {
+        session: sessionPath,
+        queryInput: {
+            text: {
+                // The query to send to the dialogflow agent
+                text: text,
+                // The language used by the client (en-US)
+                languageCode: 'en-US',
+            },
+        },
+    };
+
+    // Send request and log result
+    const responses = await sessionClient.detectIntent(request);
+    console.log('Detected intent');
+    const result = responses[0].queryResult;
+    if(result.fulfillmentText === "welcome"){
+        decideMessage(sender, result.fulfillmentText)
+    }
+    else {
+        let messageData = JSON.parse(result.fulfillmentText)
+        console.log(messageData)
+        sendRequest(sender, messageData)
+    }
+    //decideMessage(sender, result.fulfillmentText)
+}
