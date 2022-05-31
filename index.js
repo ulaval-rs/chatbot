@@ -21,8 +21,8 @@ app.get('/', function(req, res) {
 
 let token = process.env.TOKEN
 let users = []
-let opening_choices = ["Send a picture", "Send geographical coordinates"]
-let opening_payloads = ["picture", "coordinates"]
+let opening_choices = ["Report a moose sighting", "Check up on previous data"]
+let opening_payloads = ["moose", "data"]
 let consent_choices = ["I consent", "I do not consent >:("]
 let consent_payloads = ["yes", "no"]
 let current_context = "welcome"
@@ -39,7 +39,6 @@ app.post('/webhook/', function(req, res) {
         if (event.message) {
             if (event.message.text) {
                 let text = event.message.text
-                //here we can have a switch case that determines where we are in the conversation
                 decideMessage(sender, text)
             }
             else {
@@ -64,6 +63,7 @@ function decideMessage(sender, text1){
                         if (users.find(element => element === sender)){
                             sendButtonMessage(sender, `Welcome back ${response.data.first_name}, how can I help you today?`,
                                 opening_choices, opening_payloads)
+                            current_context = "first action"
                         }
                         else {
                             sendButtonMessage(sender, `Hello ${response.data.first_name}, to continue, please accept to be added to the research network`,
@@ -82,6 +82,9 @@ function decideMessage(sender, text1){
     else if (current_context === "first action"){
         decideWhatActionToTake(sender, text1)
     }
+    else if (current_context === "time"){
+        parseTime(sender, text1)
+    }
 }
 
 function decideConsentStatus(sender, text1){
@@ -92,22 +95,27 @@ function decideConsentStatus(sender, text1){
             opening_choices, opening_payloads)
         current_context = "first action"
     }
-    else {
+    else if (text.includes("no")){
         sendText(sender, "Okay, come back if you change your mind")
         current_context = "welcome"
+    }
+    else {
+        sendText(sender, "Please choose one of the options.")
     }
 }
 
 function decideWhatActionToTake(sender, text1){
     current_context = "first action"
     let text = text1.toLowerCase()
-    if (text.includes("picture")){
-        sendText(sender, "Do you like this moose?")
-        sendMediaMessage(sender, "Here is the text")
-    }else if (text.includes("coordinates")){
-        sendText(sender, "Place your coordinates on this map and send it back")
-        var url = 'https://google.com/maps/place/Quebec'
-        sendText(sender, url)
+    if (text.includes("moose")){
+        sendText(sender, "Alright, let's get started!")
+        sendText(sender, "When did you see the moose?")
+        current_context = "time"
+    }else if (text.includes("data")){
+        sendText(sender, "WIP")
+    }
+    else {
+        sendText(sender, "Please choose one of the options.")
     }
 }
 
@@ -118,7 +126,9 @@ function parseLocation(sender, text1){
 
 function parseTime(sender, text1){
     current_context = "time"
-    //TODO
+    let result = runSample(text1, sender).then(value => {
+        sendButtonMessage(sender, value, ["yes", "no"], ["yes", "no"])
+    })
 }
 
 function parsePicture(sender, image){
