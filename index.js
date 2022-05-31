@@ -56,19 +56,25 @@ app.post('/webhook/', function(req, res) {
 
 function decideMessage(sender, text1){
     let text = text1.toLowerCase()
-    if (text==="welcome"){
-        axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
-            .then((response) => {
-                if (users.find(element => element === sender)){
-                    sendButtonMessage(sender, `Welcome back ${response.data.first_name}, how can I help you today?`,
-                        opening_choices, opening_payloads)
-                }
-                else {
-                    sendButtonMessage(sender, `Hello ${response.data.first_name}, to continue, please accept to be added to the research network`,
-                        consent_choices, consent_payloads)
-                }
-            })
+    if (current_context === "welcome"){
+        let response = runSample(text, sender).then(value => {
+            if (value === "welcome"){
+                axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
+                    .then((response) => {
+                        if (users.find(element => element === sender)){
+                            sendButtonMessage(sender, `Welcome back ${response.data.first_name}, how can I help you today?`,
+                                opening_choices, opening_payloads)
+                        }
+                        else {
+                            sendButtonMessage(sender, `Hello ${response.data.first_name}, to continue, please accept to be added to the research network`,
+                                consent_choices, consent_payloads)
+                        }
+                    })
 
+            } else {
+                sendText(sender, "I'm sorry, I didn't quite catch that")
+            }
+        })
     }
 }
 
@@ -241,15 +247,8 @@ async function runSample(text, sender, projectId = 'researchassistant') {
 
     // Send request and log result
     const responses = await sessionClient.detectIntent(request);
-    console.log('Detected intent');
     const result = responses[0].queryResult;
-    if(result.fulfillmentText === "welcome"){
-        decideMessage(sender, result.fulfillmentText)
-    }
-    else {
-        let messageData = JSON.parse(result.fulfillmentText)
-        console.log(messageData)
-        sendRequest(sender, messageData)
-    }
+    let response = result.fulfillmentText
+    return String(response)
     //decideMessage(sender, result.fulfillmentText)
 }
