@@ -132,9 +132,11 @@ function parseTime(sender, text1){
         console.log(date_time)
         if(date_time.length >= 2){
             sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Where did you see the moose?`)
+            sendText(sender, "http://localhost:63342/chatbot/LocationPage.html?_ijt=c6eppi5i84ada414duj16fbshf&_ij_")
         }
         else {
-            sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Care to be more specific about the time?`)
+            sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Where did you see the moose?`)
+            sendText(sender, "http://localhost:63342/chatbot/LocationPage.html?_ijt=c6eppi5i84ada414duj16fbshf&_ij_")
         }
         current_context = "location"
     })
@@ -217,29 +219,6 @@ function sendRequest(sender, messageData){
         } else if (response.body.error) {
             console.log(String(response.body.error.message))
         }
-    })
-}
-
-function getStartedButton(){
-    request({
-        url: "https://graph.facebook.com/v13.0/me/messenger_profile",
-        qs: {access_token: token},
-        method: "POST",
-        json: {
-            greeting: [
-                {
-                    "locale":"default",
-                    "text":"Hello!"
-                }
-            ]
-    }
-
-        }, function(error, response, body) {
-            if (error) {
-                console.log("sending error")
-            } else if (response.body.error) {
-                console.log(String(response.body.error.message))
-            }
     })
 }
 
