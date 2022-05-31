@@ -85,6 +85,9 @@ function decideMessage(sender, text1){
     else if (current_context === "time"){
         parseTime(sender, text1)
     }
+    else if (current_context === "location"){
+        parseLocation(sender, text1)
+    }
 }
 
 function decideConsentStatus(sender, text1){
@@ -120,14 +123,20 @@ function decideWhatActionToTake(sender, text1){
 }
 
 function parseLocation(sender, text1){
-    current_context = "location"
-    //TODO
+    sendText(sender, "WIP")
 }
 
 function parseTime(sender, text1){
-    current_context = "time"
     let result = runSample(text1, sender).then(value => {
-        sendButtonMessage(sender, value, ["yes", "no"], ["yes", "no"])
+        let date_time = value.split("T")
+        console.log(date_time)
+        if(date_time.length >= 2){
+            sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Where did you see the moose?`)
+        }
+        else {
+            sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Care to be more specific about the time?`)
+        }
+        current_context = "location"
     })
 }
 
