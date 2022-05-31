@@ -68,6 +68,7 @@ function decideMessage(sender, text1){
                         else {
                             sendButtonMessage(sender, `Hello ${response.data.first_name}, to continue, please accept to be added to the research network`,
                                 consent_choices, consent_payloads)
+                            current_context = "consent"
                         }
                     })
 
@@ -75,19 +76,25 @@ function decideMessage(sender, text1){
                 sendText(sender, "I'm sorry, I didn't quite catch that")
             }
         })
+    } else if (current_context === "consent"){
+        decideConsentStatus(sender, text1)
+    }
+    else if (current_context === "first action"){
+        decideWhatActionToTake(sender, text1)
     }
 }
 
 function decideConsentStatus(sender, text1){
-    current_context = "consent"
     let text = text1.toLowerCase()
     if (text.includes("yes")){
         users.push(sender)
         sendButtonMessage(sender, `Okay, you're added! How can I help you today?`,
             opening_choices, opening_payloads)
+        current_context = "first action"
     }
     else {
         sendText(sender, "Okay, come back if you change your mind")
+        current_context = "welcome"
     }
 }
 
