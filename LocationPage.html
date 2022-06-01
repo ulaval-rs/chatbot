@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="">
 <body>
 
 
@@ -8,6 +8,7 @@
 <p id="location"></p>
 
 <script>
+
     var user_location = document.getElementById("location");
 
     function getLocation() {
@@ -21,6 +22,8 @@
     function showPosition(position) {
         user_location.innerHTML = "Latitude: " + position.coords.latitude +
             "<br>Longitude: " + position.coords.longitude;
+        let markup = user_location.innerHTML
+        console.log(markup)
     }
 </script>
 

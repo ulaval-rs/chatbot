@@ -6,6 +6,9 @@ const request = require('request')
 const axios = require('axios')
 const dialogflow = require('@google-cloud/dialogflow');
 const uuid = require('uuid');
+const {response} = require("express");
+const { Navigator } = require("node-navigator");
+const navigator = new Navigator();
 
 const app = express()
 
@@ -16,7 +19,12 @@ app.use(bodyParser.json())
 const sessionClient = new dialogflow.SessionsClient();
 
 app.get('/', function(req, res) {
-    res.send("Hi I am a chatbot")
+    //res.send("Hi I am a chatbot")
+    axios.get("http://localhost:63342/chatbot/LocationPage.html?_ijt=dj546m8q0t34l2ilgk9t93kn1f&_ij_").then(
+        response => {
+            console.log(response)
+        }
+    )
 })
 
 let token = process.env.TOKEN
@@ -123,7 +131,15 @@ function decideWhatActionToTake(sender, text1){
 }
 
 function parseLocation(sender, text1){
-    sendText(sender, "WIP")
+    if (text1 === "location"){
+        navigator.geolocation.getCurrentPosition((success, error) => {
+            if (error) console.error(error);
+            else console.log(success);
+        });
+    }
+    else if (text1 === "no_location"){
+        sendText(sender, "In that case, would you like to send whre the moose was found?")
+    }
 }
 
 function parseTime(sender, text1){
@@ -132,11 +148,13 @@ function parseTime(sender, text1){
         console.log(date_time)
         if(date_time.length >= 2){
             sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Where did you see the moose?`)
-            sendText(sender, "http://localhost:63342/chatbot/LocationPage.html?_ijt=c6eppi5i84ada414duj16fbshf&_ij_")
+            //sendUrl(sender, "http://localhost:63342/chatbot/LocationPage.html?_ijt=c6eppi5i84ada414duj16fbshf&_ij_")
+
         }
         else {
             sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Where did you see the moose?`)
-            sendText(sender, "http://localhost:63342/chatbot/LocationPage.html?_ijt=c6eppi5i84ada414duj16fbshf&_ij_")
+            sendButtonMessage(sender, "If you have recently seen the moose, do you consent to give your current location?",
+                ["Yes", "No"], ["location", "no_location"])
         }
         current_context = "location"
     })
@@ -178,23 +196,19 @@ function sendButtonMessage(sender, text, titles, payloads){
     sendRequest(sender, messageData)
 }
 
-function sendMediaMessage(sender, text){
+function sendUrl(sender, text){
     let messageData = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "media",
-                "elements": [
+        "attachment":{
+            "type":"template",
+            "payload":{
+                "template_type":"button",
+                "text":"Click here to share your location",
+                "buttons":[
                     {
-                        "media_type": "image",
-                        "url": "https://www.facebook.com/102237832502478/photos/a.106534478739480/106534455406149/",
-                        "buttons": [
-                            {
-                                "type": "postback",
-                                "title": "I like this moose",
-                                "payload": "moose"
-                            }
-                        ]
+                        "type":"web_url",
+                        "url":text,
+                        "title":"Go!",
+                        "webview_height_ratio": "full"
                     }
                 ]
             }
@@ -202,6 +216,7 @@ function sendMediaMessage(sender, text){
     }
     sendRequest(sender, messageData)
 }
+
 
 
 function sendRequest(sender, messageData){
