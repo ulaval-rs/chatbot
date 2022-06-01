@@ -35,6 +35,8 @@ let consent_choices = ["I consent", "I do not consent >:("]
 let consent_payloads = ["yes", "no"]
 let current_context = "welcome"
 
+let data = {}
+
 app.get('/webhook/', function(req, res) {
     res.send(req.query['hub.challenge'])
 })
@@ -119,11 +121,15 @@ function decideWhatActionToTake(sender, text1){
     current_context = "first action"
     let text = text1.toLowerCase()
     if (text.includes("moose")){
-        sendText(sender, "Alright, let's get started!")
-        sendText(sender, "When did you see the moose?")
+        sendText(sender, "Let's get started! When did you see the moose?")
         current_context = "time"
     }else if (text.includes("data")){
-        sendText(sender, "WIP")
+        if ( Object.keys(data) == 0){
+            sendText(sender, "You have not entered any data so far")
+            sendButtonMessage(sender, `How can I help you today?`,
+                opening_choices, opening_payloads)
+        }
+
     }
     else {
         sendText(sender, "Please choose one of the options.")
@@ -131,14 +137,17 @@ function decideWhatActionToTake(sender, text1){
 }
 
 function parseLocation(sender, text1){
-    if (text1 === "location"){
+    if (text1.includes("location")){
         navigator.geolocation.getCurrentPosition((success, error) => {
             if (error) console.error(error);
-            else console.log(success);
+            else {
+                sendUrl(sender, `https://www.google.com/maps/@${success.latitude},${success.longitude},15z`)
+                data["location"]= {"latitude" : success.latitude, "longitude" : success.longitude}
+            }
         });
     }
-    else if (text1 === "no_location"){
-        sendText(sender, "In that case, would you like to send whre the moose was found?")
+    else if (text1.includes("no_location")){
+        sendText(sender, "In that case, would you like to send where the moose was found?")
     }
 }
 
@@ -149,12 +158,13 @@ function parseTime(sender, text1){
         if(date_time.length >= 2){
             sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Where did you see the moose?`)
             //sendUrl(sender, "http://localhost:63342/chatbot/LocationPage.html?_ijt=c6eppi5i84ada414duj16fbshf&_ij_")
-
+            data["time"] = date_time[0]
         }
         else {
             sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Where did you see the moose?`)
             sendButtonMessage(sender, "If you have recently seen the moose, do you consent to give your current location?",
                 ["Yes", "No"], ["location", "no_location"])
+            data["time"] = {"date" : date_time[0], "time": date_time[1]}
         }
         current_context = "location"
     })
@@ -202,12 +212,12 @@ function sendUrl(sender, text){
             "type":"template",
             "payload":{
                 "template_type":"button",
-                "text":"Click here to share your location",
+                "text":"Cool your location has been saved!",
                 "buttons":[
                     {
                         "type":"web_url",
                         "url":text,
-                        "title":"Go!",
+                        "title":"Go to Google Maps",
                         "webview_height_ratio": "full"
                     }
                 ]
