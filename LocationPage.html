@@ -20,7 +20,7 @@
     }
 
     function showPosition(position) {
-        user_location.innerHTML = "Latitude: " + position.coords.latitude +
+        user_location.textContent = "Latitude: " + position.coords.latitude +
             "<br>Longitude: " + position.coords.longitude;
         let markup = user_location.innerHTML
         console.log(markup)

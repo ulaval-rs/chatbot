@@ -16,15 +16,9 @@ app.set('port', (process.env.PORT || 5000))
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
-const sessionClient = new dialogflow.SessionsClient();
 
 app.get('/', function(req, res) {
-    //res.send("Hi I am a chatbot")
-    axios.get("http://localhost:63342/chatbot/LocationPage.html?_ijt=dj546m8q0t34l2ilgk9t93kn1f&_ij_").then(
-        response => {
-            console.log(response)
-        }
-    )
+    res.send("Hi I am a chatbot")
 })
 
 let token = process.env.TOKEN
