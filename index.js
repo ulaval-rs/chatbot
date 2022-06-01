@@ -65,6 +65,11 @@ app.post('/webhook/', function(req, res) {
 
 function decideMessage(sender, text1){
     let text = text1.toLowerCase()
+    if (text.includes("quit")){
+        sendButtonMessage(sender, `How can I help you today?`,
+            opening_choices, opening_payloads)
+        current_context = "first action"
+    }
     if (current_context === "welcome"){
         let response = runSample(text, sender).then(value => {
             if (value === "welcome"){
@@ -119,6 +124,7 @@ function decideConsentStatus(sender, text1){
 
 function decideWhatActionToTake(sender, text1){
     current_context = "first action"
+    sendText(sender, "If at any point you want to quit to the main menu, say Quit")
     let text = text1.toLowerCase()
     if (text.includes("moose")){
         sendText(sender, "Let's get started! When did you see the moose?")
@@ -128,6 +134,14 @@ function decideWhatActionToTake(sender, text1){
             sendText(sender, "You have not entered any data so far")
             sendButtonMessage(sender, `How can I help you today?`,
                 opening_choices, opening_payloads)
+        }
+        else {
+            console.log(JSON.stringify(data))
+            let data_presentable = ""
+            for (let key in data){
+                data_presentable = data_presentable + key + " : " + JSON.stringify(data[key]) + "\n"
+            }
+            sendText(sender, data_presentable)
         }
 
     }
