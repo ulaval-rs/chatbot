@@ -256,7 +256,7 @@ function sendRequest(sender, messageData){
 }
 
 app.listen(app.get('port'), function() {
-    console.log("running: port")
+    console.log("running: port " + String(app.get('port')))
 })
 
 async function runSample(text, sender, projectId = 'researchassistant') {

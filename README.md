@@ -30,7 +30,7 @@ save the url that appears on the console
 
 2. run the application with the command
 ```bash
-node index.js
+node chatbot.js
 ```
 to test if the app is up and running, visit the url given to you
 by ngrok

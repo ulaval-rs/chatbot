@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="">
+
 <body>
 
 
 <button onclick="getLocation()">Click here to display coordinates</button>
-
+<script src="https://localhost:3000/socket.io/socket.io.js"></script>
 <p id="location"></p>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
-
+    let socket = io()
     var user_location = document.getElementById("location");
 
     function getLocation() {
@@ -20,12 +22,11 @@
     }
 
     function showPosition(position) {
-        user_location.textContent = "Latitude: " + position.coords.latitude +
+        user_location.innerHTML= "Latitude: " + position.coords.latitude +
             "<br>Longitude: " + position.coords.longitude;
         let markup = user_location.innerHTML
-        console.log(markup)
+        socket.emit('location', markup)
     }
 </script>
-
 </body>
 </html>
