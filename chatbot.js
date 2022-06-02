@@ -28,6 +28,7 @@ let opening_payloads = ["moose", "data"]
 let consent_choices = ["I consent", "I do not consent >:("]
 let consent_payloads = ["yes", "no"]
 let current_context = "welcome"
+let intermediate_api_url = "http://127.0.0.1:3000"
 
 let data = {}
 
@@ -166,13 +167,30 @@ function parseTime(sender, text1){
         if(date_time.length >= 2){
             sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Where did you see the moose?`)
             //sendUrl(sender, "http://localhost:63342/chatbot/LocationPage.html?_ijt=c6eppi5i84ada414duj16fbshf&_ij_")
-            data["time"] = date_time[0]
+            axios.post(intermediate_api_url + "/time", {
+                date: date_time[0],
+                time: date_time[1]
+              })
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
         }
         else {
             sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Where did you see the moose?`)
             sendButtonMessage(sender, "If you have recently seen the moose, do you consent to give your current location?",
                 ["Yes", "No"], ["location", "no_location"])
-            data["time"] = {"date" : date_time[0], "time": date_time[1]}
+            axios.post(intermediate_api_url + "/time", {
+                date: date_time[0],
+              })
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
         }
         current_context = "location"
     })
