@@ -1,11 +1,13 @@
 from flask import Flask, redirect, send_from_directory, current_app
 from flask import request
 import uuid
+import os
 url = "http"
 locations = []
 times = []
 ids_for_use  =[]
 ids_and_locations = {}
+current_id = ""
 
 app = Flask(__name__)
 
@@ -29,7 +31,9 @@ def get_url():
 @app.route('/<id>', methods = ['GET'])
 def get_page(id):
     if id in ids_for_use:
-        return current_app.send_static_file('LocationPage.html')
+        root_dir = os.path.dirname(os.getcwd())
+        print(root_dir)
+        return send_from_directory(os.path.join(root_dir, 'location-page', 'locationpage','html'), "LocationPage.html")
     else:
         return "Page not found"
 
@@ -37,5 +41,6 @@ def get_page(id):
 def store_location():
     ids_for_use.remove(id)
     ids_and_locations[id] = request.data
+    print(request.data)
 
 app.run(port=3000)
