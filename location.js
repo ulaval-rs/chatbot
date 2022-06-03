@@ -6,10 +6,15 @@ const { Server } = require("socket.io");
 const axios = require("axios");
 const io = new Server(server);
 let intermediate_api_url = "http://127.0.0.1:3000"
+let ids = []
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/LocationPage.html');
+    res.sendFile(__dirname + '/LocationPage.static');
 });
+
+app.get('/:id', (req, res) => {
+    ids.push(req.params.id)
+})
 
 io.on('connection', (socket) => {
     console.log('User has connected');
