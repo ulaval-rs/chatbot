@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="">
+
+<body>
+
+
+<button onclick="getLocation()">Click here to send your coordinates</button>
+<script src="https://localhost:3000/socket.io/socket.io.js"></script>
+<p id="location"></p>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    let socket = io()
+    var user_location = document.getElementById("location");
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            user_location.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        user_location.innerHTML= "Latitude: " + position.coords.latitude +
+            " Longitude: " + position.coords.longitude;
+        let markup = user_location.innerHTML
+        socket.emit('location', markup)
+        window.close()
+    }
+</script>
+</body>
+</html>
