@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="">
+
+<body>
+
+
+<button onclick="getLocation()">Click here to send your coordinates</button>
+<p id="location"></p>
+
+<script>
+    var user_location = document.getElementById("location");
+    import axios from 'axios'
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            user_location.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        user_location.innerHTML= "Latitude: " + position.coords.latitude +
+            " Longitude: " + position.coords.longitude;
+        let markup = user_location.innerHTML
+        let url = window.location.href
+        console.log(url)
+        fetch(url + "/location", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({
+                location : markup
+            })
+            }).then(res => {
+                console.log("Request complete! response:", res);
+                });
+    }
+</script>
+</body>
+</html>
