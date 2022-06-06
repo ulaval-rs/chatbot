@@ -32,9 +32,7 @@ def get_url():
 @app.route('/<id>', methods = ['GET'])
 def get_page(id):
     if id in ids_for_use:
-        root_dir = os.path.dirname(os.getcwd())
-        print(root_dir)
-        return send_from_directory(os.path.join(root_dir, 'location-page', 'locationpage','html'), "LocationPage.html")
+        return send_from_directory('html', "LocationPage.html")
     else:
         return "Page not found"
 
