@@ -5,7 +5,6 @@ import uuid
 import os
 url = "http"
 times = []
-ids_for_use  = set()
 ids_and_locations = {}
 current_id = ""
 
@@ -18,7 +17,6 @@ app = Flask(__name__)
 
 def get_id():
     id = str(uuid.uuid1())
-    ids_for_use.add(id)
     return id
 
 
@@ -30,16 +28,15 @@ def get_url():
 
 @app.route('/<id>', methods = ['GET'])
 def get_page(id):
-    if id in ids_for_use:
-        return send_from_directory('html', "LocationPage.html")
+    if id in ids_and_locations and ids_and_locations[id] != None:
+        return Response(status=400)
     else:
-        return Response(status=404)
+        return send_from_directory('html', "LocationPage.html")
 
 @app.route('/location', methods=['POST'])
 def store_location():
     data = (json.loads(request.data))
     id = data["id"]
-    ids_for_use.remove(id)
     ids_and_locations[id] = data["location"]
     print(ids_and_locations)
     return Response(status=200)
