@@ -1,12 +1,11 @@
 import json
 from flask import Flask, redirect, send_from_directory, current_app
-from flask import request
+from flask import request, Response
 import uuid
 import os
 url = "http"
-locations = []
 times = []
-ids_for_use  =[]
+ids_for_use  = set()
 ids_and_locations = {}
 current_id = ""
 
@@ -19,7 +18,7 @@ app = Flask(__name__)
 
 def get_id():
     id = str(uuid.uuid1())
-    ids_for_use.append(id)
+    ids_for_use.add(id)
     return id
 
 
@@ -34,7 +33,7 @@ def get_page(id):
     if id in ids_for_use:
         return send_from_directory('html', "LocationPage.html")
     else:
-        return "Page not found"
+        return Response(status=404)
 
 @app.route('/location', methods=['POST'])
 def store_location():
@@ -43,6 +42,6 @@ def store_location():
     ids_for_use.remove(id)
     ids_and_locations[id] = data["location"]
     print(ids_and_locations)
-    return "200"
+    return Response(status=200)
 
 app.run(port=3000)
