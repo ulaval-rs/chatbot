@@ -9,7 +9,6 @@
 
 <script>
     var user_location = document.getElementById("location");
-    import axios from 'axios'
 
     function getLocation() {
         if (navigator.geolocation) {
@@ -23,17 +22,19 @@
         user_location.innerHTML= "Latitude: " + position.coords.latitude +
             " Longitude: " + position.coords.longitude;
         let markup = user_location.innerHTML
+        let location_data = {
+            latitude : position.coords.latitude,
+            longitude : position.coords.longitude
+        }
         let url = window.location.href
-        console.log(url)
-        fetch(url + "/location", {
-            method: "POST",
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({
-                location : markup
-            })
-            }).then(res => {
-                console.log("Request complete! response:", res);
-                });
+        console.log(markup)
+         let req = fetch(url + '/location',{
+            method: 'post',
+            body: JSON.stringify({location : location_data})
+        }).then(response => response.json())
+            .then(data => console.log(data));
+        window.close()
+            
     }
 </script>
 </body>

@@ -1,3 +1,4 @@
+import json
 from flask import Flask, redirect, send_from_directory, current_app
 from flask import request
 import uuid
@@ -38,9 +39,11 @@ def get_page(id):
         return "Page not found"
 
 @app.route('/<id>/location', methods=['POST'])
-def store_location():
+def store_location(id):
     ids_for_use.remove(id)
-    ids_and_locations[id] = request.data
-    print(request.data)
+    data = (json.loads(request.data))
+    ids_and_locations[id] = data["location"]
+    print(ids_and_locations)
+    return "200"
 
 app.run(port=3000)
