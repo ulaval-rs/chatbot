@@ -27,10 +27,11 @@
             longitude : position.coords.longitude
         }
         let url = window.location.href
-        console.log(markup)
-         let req = fetch(url + '/location',{
+         let req = fetch(url.slice(0, 21) + '/location',{
             method: 'post',
-            body: JSON.stringify({location : location_data})
+            body: JSON.stringify({
+                id : url.slice(22),
+                location : location_data})
         }).then(response => response.json())
             .then(data => console.log(data));
         window.close()

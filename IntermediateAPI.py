@@ -36,10 +36,11 @@ def get_page(id):
     else:
         return "Page not found"
 
-@app.route('/<id>/location', methods=['POST'])
-def store_location(id):
-    ids_for_use.remove(id)
+@app.route('/location', methods=['POST'])
+def store_location():
     data = (json.loads(request.data))
+    id = data["id"]
+    ids_for_use.remove(id)
     ids_and_locations[id] = data["location"]
     print(ids_and_locations)
     return "200"
