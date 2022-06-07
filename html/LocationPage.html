@@ -19,9 +19,6 @@
     }
 
     function showPosition(position) {
-        user_location.innerHTML= "Latitude: " + position.coords.latitude +
-            " Longitude: " + position.coords.longitude;
-        let markup = user_location.innerHTML
         let location_data = {
             latitude : position.coords.latitude,
             longitude : position.coords.longitude
@@ -35,7 +32,6 @@
         }).then(response => response.json())
             .then(data => console.log(data));
         window.close()
-            
     }
 </script>
 </body>
