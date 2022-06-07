@@ -29,6 +29,63 @@ let consent_choices = ["I consent", "I do not consent >:("]
 let consent_payloads = ["yes", "no"]
 let current_context = "welcome"
 let intermediate_api_url = "http://127.0.0.1:3000"
+let questions = [
+    {
+        "key": "question0",
+        "question" : "Do you consent to being added to the network",
+        "optional" : "false",
+        "choices" : [
+            {
+                "title" : "Yes",
+                "payload" : "yes",
+                "answer" : "Cool! You are added to the network"
+            },
+            {
+                "title" : "No",
+                "payload" : "no",
+                "answer" : "Come back if you change your mind!"
+            }
+        ]
+    },
+    {
+        "key": "question1",
+        "question" : "What would you like to do?",
+        "optional" : "false",
+        "choices" : [
+            {
+                "title" : "Report a moose",
+                "payload" : "moose",
+                "answer" : "Let's get started!"
+            },
+            {
+                "title" : "Consult data",
+                "payload" : "data",
+                "answer" : "Here is your data"
+            },
+            {
+                "title" : "Quit",
+                "payload" : "quit",
+                "answer" : "See you soon!"
+            }
+        ]
+    },
+    {
+        "key": "question2",
+        "question" : "When did you see the moose?",
+        "optional" : "true"
+    },
+    {
+        "key": "question3",
+        "question" : "Where did you see the moose?",
+        "optional" : "true",
+        "behaviour" : "location_app"
+    },
+    {
+        "key": "question4",
+        "question" : "Can you send a picture of the moose",
+        "optional" : "true",
+    }
+]
 
 let data = {}
 
@@ -154,8 +211,6 @@ function parseLocation(sender, text1){
                     console.log(response.data)
                     sendUrl(sender, response.data)
                 })
-                sendUrl(sender, `https://www.google.com/maps/@${success.latitude},${success.longitude},15z`)
-                data["location"]= {"latitude" : success.latitude, "longitude" : success.longitude}
             }
         });
     }
