@@ -27,8 +27,6 @@ let names = {}
 let quit = true
 let opening_choices = ["Report a moose sighting", "Check up on previous data"]
 let opening_payloads = ["moose", "data"]
-let consent_choices = ["I consent", "I do not consent >:("]
-let consent_payloads = ["yes", "no"]
 let current_question = -1
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
@@ -98,7 +96,7 @@ function detectUser(id, name, text){
         quit = false
         determineQuestion(id, current_question, text)
     }
-    else if (quit == false){
+    else if (quit === false){
         current_question = users[id]
         determineQuestion(id, current_question, text)
     }
@@ -117,10 +115,10 @@ function determineQuestion(sender, current_question, text){
         decideConsentStatus(sender, text, question_text, choices)
     }
     else if (current_question === 2){
-        decideWhatActionToTake(sender, text)
+        decideWhatActionToTake(sender, text, question_text, optional_button)
     }
     else if (current_question === 3){
-        parseTime(sender, text)
+        parseTime(sender, text, optional_button)
     }
     else if (current_question === 4){
         parseLocation(sender, text)
@@ -144,14 +142,16 @@ function decideConsentStatus(sender, text1, question_text, choices){
     }
     else {
         sendText(sender, "Please choose one of the options.")
+        current_question -= 1
+        users[sender] = current_question
     }
 }
 
-function decideWhatActionToTake(sender, text1){
+function decideWhatActionToTake(sender, text1, question_text, optional){
     sendText(sender, "If at any point you want to quit to the main menu, say Quit")
     let text = text1.toLowerCase()
     if (text.includes("moose")){
-        sendText(sender, "Let's get started! When did you see the moose?")
+        sendButtonMessage(sender, question_text, optional)
     }else if (text.includes("data")){
         if ( Object.keys(data) == 0){
             sendText(sender, "You have not entered any data so far")
@@ -170,6 +170,8 @@ function decideWhatActionToTake(sender, text1){
     }
     else {
         sendText(sender, "Please choose one of the options.")
+        current_question -= 1
+        users[sender] = current_question
     }
 }
 
@@ -191,6 +193,9 @@ function parseLocation(sender, text1){
 }
 
 function parseTime(sender, text1){
+    if (text.includes("pass")){
+        sendText(sender, "TBD")
+    }
     let result = runSample(text1, sender).then(value => {
         let date_time = value.split("T")
         console.log(date_time)

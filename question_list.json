@@ -42,11 +42,11 @@
     {
       "key": "question2",
       "question": "When did you see the moose?",
-      "optional": {
+      "optional": [{
         "type" : "postback",
         "title" : "Pass",
         "payload": "pass"
-      },
+      }],
       "choices" : 0
     },
     {
