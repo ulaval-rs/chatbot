@@ -193,41 +193,41 @@ function parseLocation(sender, text1){
 }
 
 function parseTime(sender, text1){
-    if (text.includes("pass")){
+    if (text1.includes("pass")){
         sendText(sender, "TBD")
     }
-    let result = runSample(text1, sender).then(value => {
-        let date_time = value.split("T")
-        console.log(date_time)
-        if(date_time.length >= 2){
-            sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Where did you see the moose?`)
-            //sendUrl(sender, "http://localhost:63342/chatbot/LocationPage.html?_ijt=c6eppi5i84ada414duj16fbshf&_ij_")
-            axios.post(intermediate_api_url + "/time", {
-                date: date_time[0],
-                time: date_time[1]
-              })
-              .then(function (response) {
-                console.log(response.data);
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-        }
-        else {
-            sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Where did you see the moose?`)
-            sendButtonMessage(sender, "If you have recently seen the moose, do you consent to give your current location?",
-                ["Yes", "No"], ["location", "no_location"])
-            axios.post(intermediate_api_url + "/time", {
-                date: date_time[0],
-              })
-              .then(function (response) {
-                console.log(response.data);
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-        }
-    })
+    else {
+        let result = runSample(text1, sender).then(value => {
+            let date_time = value.split("T")
+            console.log(date_time)
+            if (date_time.length >= 2) {
+                sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Where did you see the moose?`)
+                axios.post(intermediate_api_url + "/time", {
+                    date: date_time[0],
+                    time: date_time[1]
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            } else {
+                sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Where did you see the moose?`)
+                sendButtonMessage(sender, "If you have recently seen the moose, do you consent to give your current location?",
+                    ["Yes", "No"], ["location", "no_location"])
+                axios.post(intermediate_api_url + "/time", {
+                    date: date_time[0],
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        })
+    }
 }
 
 function parsePicture(sender, image){

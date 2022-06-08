@@ -51,6 +51,23 @@
     },
     {
       "key": "question3",
+      "question": "Do you consent to giving your location",
+      "optional": 0,
+      "choices": [
+        {
+          "type" : "url",
+          "title": "Yes",
+          "payload": "yes"
+        },
+        {
+          "type" : "postback",
+          "title": "No",
+          "payload": "no"
+        }
+      ]
+    },
+    {
+      "key": "question4",
       "question": "Where did you see the moose?",
       "optional": {
         "type" : "postback",
@@ -60,7 +77,7 @@
       "choices" : "location_app"
     },
     {
-      "key": "question4",
+      "key": "question5",
       "question": "Can you send a picture of the moose",
       "optional": {
         "type" : "postback",
