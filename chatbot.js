@@ -24,11 +24,12 @@ app.get('/', function(req, res) {
 let token = process.env.TOKEN
 let users = {}
 let names = {}
+let quit = true
 let opening_choices = ["Report a moose sighting", "Check up on previous data"]
 let opening_payloads = ["moose", "data"]
 let consent_choices = ["I consent", "I do not consent >:("]
 let consent_payloads = ["yes", "no"]
-let current_question = 0
+let current_question = -1
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
 
@@ -64,6 +65,7 @@ app.post('/webhook/', function(req, res) {
 function decideMessage(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("quit")){
+        quit = true
         sendButtonMessage(sender, `How can I help you today?`,
             opening_choices, opening_payloads)
     }
@@ -74,58 +76,71 @@ function decideMessage(sender, text1){
                     .then((response) => {
                         names[sender] = response.data.first_name
                         console.log(response.data.first_name)
-                        detectUser(sender, names[sender])
+                        detectUser(sender, names[sender], text)
                     })
             } else {
-                detectUser(sender, names[sender])
+                detectUser(sender, names[sender], text)
             }
         })
     }
 }
 
 
-function detectUser(id, name){
-    if(id in users){
+function detectUser(id, name, text){
+    if(id in users && quit === true){
         current_question = users[id]
         sendText(id, "Hi " + name + "!")
+        quit = false
+        determineQuestion(id, current_question, text)
     }
-    else {
+    else if (!(id in users)){
         sendText(id, "Hi " + name + " it doesn't look like you've used this service before.")
+        quit = false
+        determineQuestion(id, current_question, text)
     }
-    determineQuestion(id, current_question)
+    else if (quit == false){
+        current_question = users[id]
+        determineQuestion(id, current_question, text)
+    }
 }
 
-function determineQuestion(sender, current_question){
+function determineQuestion(sender, current_question, text){
+    current_question += 1
+    users[sender] = current_question
     let question_text = questions.questions[current_question]["question"]
     let optional_button = questions.questions[current_question]["optional"]
     let choices = questions.questions[current_question]["choices"]
-    if (Array.isArray(choices)){
+    if (current_question === 0){
         sendButtonMessage(sender, question_text, choices)
     }
-    else if (typeof choices === "string"){
-        if (optional_button !== 0){
-            sendButtonMessage(sender, question_text, optional_button)
-        }
-        else if (optional_button === 0){
-            console.log("TBD")
-        }
+    else if (current_question === 1){
+        decideConsentStatus(sender, text, question_text, choices)
+    }
+    else if (current_question === 2){
+        decideWhatActionToTake(sender, text)
+    }
+    else if (current_question === 3){
+        parseTime(sender, text)
+    }
+    else if (current_question === 4){
+        parseLocation(sender, text)
     }
     else {
-        console.log(typeof choices)
+        sendText(sender, "I'm not quite sure what you mean")
+        current_question -= 1
+        users[sender] = current_question
     }
-    current_question += 1
-    users[sender] = current_question
 }
 
-function decideConsentStatus(sender, text1){
+function decideConsentStatus(sender, text1, question_text, choices){
     let text = text1.toLowerCase()
     if (text.includes("yes")){
-        users[sender] = 1
-        sendButtonMessage(sender, `Okay, you're added! How can I help you today?`,
-            opening_choices, opening_payloads)
+        sendButtonMessage(sender, question_text,
+            choices)
     }
     else if (text.includes("no")){
         sendText(sender, "Okay, come back if you change your mind")
+        users[sender] = 0
     }
     else {
         sendText(sender, "Please choose one of the options.")
