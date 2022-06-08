@@ -1,0 +1,74 @@
+{
+  "questions" : [
+    {
+      "key": "question0",
+      "question": "Do you consent to being added to the network",
+      "optional": 0,
+      "choices": [
+        {
+          "type" : "postback",
+          "title": "Yes",
+          "payload": "yes"
+        },
+        {
+          "type" : "postback",
+          "title": "No",
+          "payload": "no"
+        }
+      ]
+    },
+    {
+      "key": "question1",
+      "question": "What would you like to do?",
+      "optional" : 0,
+      "choices": [
+        {
+          "title": "Report a moose",
+          "payload": "moose",
+          "answer" : "Let's get started!"
+        },
+        {
+          "type" : "postback",
+          "title": "Consult data",
+          "payload" : "data"
+        },
+        {
+          "type" : "postback",
+          "title" : "Quit",
+          "payload": "quit"
+        }
+      ]
+    },
+    {
+      "key": "question2",
+      "question": "When did you see the moose?",
+      "optional": {
+        "type" : "postback",
+        "title" : "Pass",
+        "payload": "pass"
+      },
+      "choices" : 0
+    },
+    {
+      "key": "question3",
+      "question": "Where did you see the moose?",
+      "optional": {
+        "type" : "postback",
+        "title" : "Pass",
+        "payload": "pass"
+      },
+      "choices" : "location_app"
+    },
+    {
+      "key": "question4",
+      "question": "Can you send a picture of the moose",
+      "optional": {
+        "type" : "postback",
+        "title" : "Pass",
+        "payload": "pass"
+      },
+      "choices" : 0
+    }
+    ]
+}
+

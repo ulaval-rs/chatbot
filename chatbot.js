@@ -22,70 +22,15 @@ app.get('/', function(req, res) {
 })
 
 let token = process.env.TOKEN
-let users = []
+let users = {}
 let opening_choices = ["Report a moose sighting", "Check up on previous data"]
 let opening_payloads = ["moose", "data"]
 let consent_choices = ["I consent", "I do not consent >:("]
 let consent_payloads = ["yes", "no"]
 let current_context = "welcome"
 let intermediate_api_url = "http://127.0.0.1:3000"
-let questions = [
-    {
-        "key": "question0",
-        "question" : "Do you consent to being added to the network",
-        "optional" : "false",
-        "choices" : [
-            {
-                "title" : "Yes",
-                "payload" : "yes",
-                "answer" : "Cool! You are added to the network"
-            },
-            {
-                "title" : "No",
-                "payload" : "no",
-                "answer" : "Come back if you change your mind!"
-            }
-        ]
-    },
-    {
-        "key": "question1",
-        "question" : "What would you like to do?",
-        "optional" : "false",
-        "choices" : [
-            {
-                "title" : "Report a moose",
-                "payload" : "moose",
-                "answer" : "Let's get started!"
-            },
-            {
-                "title" : "Consult data",
-                "payload" : "data",
-                "answer" : "Here is your data"
-            },
-            {
-                "title" : "Quit",
-                "payload" : "quit",
-                "answer" : "See you soon!"
-            }
-        ]
-    },
-    {
-        "key": "question2",
-        "question" : "When did you see the moose?",
-        "optional" : "true"
-    },
-    {
-        "key": "question3",
-        "question" : "Where did you see the moose?",
-        "optional" : "true",
-        "behaviour" : "location_app"
-    },
-    {
-        "key": "question4",
-        "question" : "Can you send a picture of the moose",
-        "optional" : "true",
-    }
-]
+let questions = require('./question_list.json')
+
 
 let data = {}
 
@@ -101,6 +46,7 @@ app.post('/webhook/', function(req, res) {
         if (event.message) {
             if (event.message.text) {
                 let text = event.message.text
+                determineQuestion(sender, 0)
                 decideMessage(sender, text)
             }
             else {
@@ -157,10 +103,30 @@ function decideMessage(sender, text1){
     }
 }
 
+function determineQuestion(sender, current_question){
+    let question_text = questions.questions[current_question]["question"]
+    let optional_button = questions.questions[current_question]["optional"]
+    let choices = questions.questions[current_question]["choices"]
+    if (Array.isArray(choices)){
+        sendButtonMessage(sender, question_text, choices)
+    }
+    else if (typeof choices === "string"){
+        if (optional_button !== 0){
+            sendButtonMessage(sender, question_text, optional_button)
+        }
+        else if (optional_button === 0){
+            console.log("TBD")
+        }
+    }
+    else {
+        console.log(typeof choices)
+    }
+}
+
 function decideConsentStatus(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("yes")){
-        users.push(sender)
+        users[sender] = 0
         sendButtonMessage(sender, `Okay, you're added! How can I help you today?`,
             opening_choices, opening_payloads)
         current_context = "first action"
@@ -266,25 +232,14 @@ function sendText(sender, text) {
     sendRequest(sender, messageData)
 }
 
-function sendButtonMessage(sender, text, titles, payloads){
+function sendButtonMessage(sender, text, buttons){
     let messageData = {
         "attachment":{
             "type":"template",
             "payload":{
                 "template_type":"button",
                 "text":text,
-                "buttons":[
-                    {
-                        "type":"postback",
-                        "title": titles[0],
-                        "payload":payloads[0]
-                    },
-                    {
-                        "type": "postback",
-                        "title": titles[1],
-                        "payload" : payloads[1]
-                    }
-                ]
+                "buttons": buttons
             }
         }
     }
