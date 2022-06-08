@@ -23,9 +23,9 @@
       "optional" : 0,
       "choices": [
         {
+          "type": "postback",
           "title": "Report a moose",
-          "payload": "moose",
-          "answer" : "Let's get started!"
+          "payload": "moose"
         },
         {
           "type" : "postback",

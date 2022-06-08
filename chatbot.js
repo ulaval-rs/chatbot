@@ -73,18 +73,24 @@ function decideMessage(sender, text1){
                 axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
                     .then((response) => {
                         names[sender] = response.data.first_name
+                        console.log(response.data.first_name)
+                        detectUser(sender, names[sender])
                     })
-                detectUser(sender, names[sender])
             } else {
-                sendText(sender, "I'm sorry, I didn't quite catch that")
+                detectUser(sender, names[sender])
             }
         })
     }
 }
 
+
 function detectUser(id, name){
     if(id in users){
         current_question = users[id]
+        sendText(id, "Hi " + name + "!")
+    }
+    else {
+        sendText(id, "Hi " + name + " it doesn't look like you've used this service before.")
     }
     determineQuestion(id, current_question)
 }
@@ -107,6 +113,8 @@ function determineQuestion(sender, current_question){
     else {
         console.log(typeof choices)
     }
+    current_question += 1
+    users[sender] = current_question
 }
 
 function decideConsentStatus(sender, text1){
