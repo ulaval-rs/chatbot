@@ -23,11 +23,12 @@ app.get('/', function(req, res) {
 
 let token = process.env.TOKEN
 let users = {}
+let names = {}
 let opening_choices = ["Report a moose sighting", "Check up on previous data"]
 let opening_payloads = ["moose", "data"]
 let consent_choices = ["I consent", "I do not consent >:("]
 let consent_payloads = ["yes", "no"]
-let current_context = "welcome"
+let current_question = 0
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
 
@@ -46,7 +47,6 @@ app.post('/webhook/', function(req, res) {
         if (event.message) {
             if (event.message.text) {
                 let text = event.message.text
-                determineQuestion(sender, 0)
                 decideMessage(sender, text)
             }
             else {
@@ -66,41 +66,27 @@ function decideMessage(sender, text1){
     if (text.includes("quit")){
         sendButtonMessage(sender, `How can I help you today?`,
             opening_choices, opening_payloads)
-        current_context = "first action"
     }
-    if (current_context === "welcome"){
+    else {
         let response = runSample(text, sender).then(value => {
-            if (value === "welcome"){
+            if (value === "welcome") {
                 axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
                     .then((response) => {
-                        if (users.find(element => element === sender)){
-                            sendButtonMessage(sender, `Welcome back ${response.data.first_name}, how can I help you today?`,
-                                opening_choices, opening_payloads)
-                            current_context = "first action"
-                        }
-                        else {
-                            sendButtonMessage(sender, `Hello ${response.data.first_name}, to continue, please accept to be added to the research network`,
-                                consent_choices, consent_payloads)
-                            current_context = "consent"
-                        }
+                        names[sender] = response.data.first_name
                     })
-
+                detectUser(sender, names[sender])
             } else {
                 sendText(sender, "I'm sorry, I didn't quite catch that")
             }
         })
-    } else if (current_context === "consent"){
-        decideConsentStatus(sender, text1)
     }
-    else if (current_context === "first action"){
-        decideWhatActionToTake(sender, text1)
+}
+
+function detectUser(id, name){
+    if(id in users){
+        current_question = users[id]
     }
-    else if (current_context === "time"){
-        parseTime(sender, text1)
-    }
-    else if (current_context === "location"){
-        parseLocation(sender, text1)
-    }
+    determineQuestion(id, current_question)
 }
 
 function determineQuestion(sender, current_question){
@@ -126,14 +112,12 @@ function determineQuestion(sender, current_question){
 function decideConsentStatus(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("yes")){
-        users[sender] = 0
+        users[sender] = 1
         sendButtonMessage(sender, `Okay, you're added! How can I help you today?`,
             opening_choices, opening_payloads)
-        current_context = "first action"
     }
     else if (text.includes("no")){
         sendText(sender, "Okay, come back if you change your mind")
-        current_context = "welcome"
     }
     else {
         sendText(sender, "Please choose one of the options.")
@@ -141,12 +125,10 @@ function decideConsentStatus(sender, text1){
 }
 
 function decideWhatActionToTake(sender, text1){
-    current_context = "first action"
     sendText(sender, "If at any point you want to quit to the main menu, say Quit")
     let text = text1.toLowerCase()
     if (text.includes("moose")){
         sendText(sender, "Let's get started! When did you see the moose?")
-        current_context = "time"
     }else if (text.includes("data")){
         if ( Object.keys(data) == 0){
             sendText(sender, "You have not entered any data so far")
@@ -217,12 +199,10 @@ function parseTime(sender, text1){
                 console.log(error);
               });
         }
-        current_context = "location"
     })
 }
 
 function parsePicture(sender, image){
-    current_context = "picture"
     //TODO
 }
 
