@@ -25,8 +25,6 @@ let token = process.env.TOKEN
 let users = {}
 let names = {}
 let quit = true
-let opening_choices = ["Report a moose sighting", "Check up on previous data"]
-let opening_payloads = ["moose", "data"]
 let current_question = -1
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
@@ -63,9 +61,21 @@ app.post('/webhook/', function(req, res) {
 function decideMessage(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("quit")){
+        //this is where separation of user[id] and current_id happens
+        //current_id is what sends us back to the main menu
+        //user[id] is where the conversation left off
+        //when we type quit, it brings us back to main menu, and current_id goes to 2
+        //when we click on report a moose, it loads current[id] to bring us back to where we were
+        //when we click on the quit option for the main menu, current_id goes to 1
+        //this is what I focus on today
+        //we can now visit the main menu by typing quit, no we need to load where we were
+        sendText(sender, "Welcome back to the main menu.")
+        current_question = 0
+        determineQuestion(sender, current_question, "yes")
+    }
+    else if (text.includes("goodbye")){
         quit = true
-        sendButtonMessage(sender, `How can I help you today?`,
-            opening_choices, opening_payloads)
+        sendText(sender, "Goodbye!")
     }
     else {
         let response = runSample(text, sender).then(value => {
@@ -92,7 +102,7 @@ function detectUser(id, name, text){
         determineQuestion(id, current_question, text)
     }
     else if (!(id in users)){
-        sendText(id, "Hi " + name + " it doesn't look like you've used this service before.")
+        sendText(id, "Hi " + name + ", it doesn't look like you've used this service before.")
         quit = false
         determineQuestion(id, current_question, text)
     }

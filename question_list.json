@@ -35,7 +35,7 @@
         {
           "type" : "postback",
           "title" : "Quit",
-          "payload": "quit"
+          "payload": "goodbye"
         }
       ]
     },
