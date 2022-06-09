@@ -39,11 +39,26 @@ def store_location():
     return Response(status=200)
 
 
+@app.route('/location/<id>', methods=['GET'])
+def get_location(id):
+    data = {
+        "id": id,
+        "location": ids_and_locations[id]
+    }
+    return Response(json.dumps(data), status=200)
+
+
 @app.route('/time', methods=['POST'])
 def store_time():
     data = (json.loads(request.data))
     times.append(data)
     return Response(status=200)
+
+
+@app.route('/time', methods=['GET'])
+def get_time():
+    data = json.dumps(times)
+    return Response(data, status=200)
 
 
 app.run(port=3000)

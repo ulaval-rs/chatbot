@@ -121,7 +121,7 @@ function determineQuestion(sender, current_question, text){
         parseTime(sender, text, question_text, choices)
     }
     else if (current_question === 4){
-        parseLocation(sender, text, question_text, optional_button)
+        parseLocation(sender, text, question_text)
     }
     else {
         sendText(sender, "I'm not quite sure what you mean")
@@ -154,7 +154,7 @@ function decideWhatActionToTake(sender, text1, question_text, optional){
     if (text.includes("moose")){
         sendButtonMessage(sender, question_text, optional)
     }else if (text.includes("data")){
-        if ( Object.keys(data) == 0){
+        if ( Object.keys(data) === 0){
             sendText(sender, "You have not entered any data so far")
             sendButtonMessage(sender, `How can I help you today?`,
                 opening_choices, opening_payloads)
@@ -176,7 +176,7 @@ function decideWhatActionToTake(sender, text1, question_text, optional){
     }
 }
 
-function parseLocation(sender, text1, question_text, optional_button){
+function parseLocation(sender, text1, question_text){
     if (text1.includes("location")){
         navigator.geolocation.getCurrentPosition((success, error) => {
             if (error) console.error(error);
