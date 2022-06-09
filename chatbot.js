@@ -152,9 +152,9 @@ function decideConsentStatus(sender, text1, question_text, choices){
         users[sender] = 0
     }
     else {
-        sendText(sender, "Please choose one of the options.")
-        current_question -= 1
-        users[sender] = current_question
+        sendText(sender, "Here are your options")
+        sendButtonMessage(sender, question_text,
+            choices)
     }
 }
 
