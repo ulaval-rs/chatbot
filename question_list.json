@@ -55,14 +55,14 @@
       "optional": 0,
       "choices": [
         {
-          "type" : "url",
+          "type" : "postback",
           "title": "Yes",
-          "payload": "yes"
+          "payload": "location"
         },
         {
           "type" : "postback",
           "title": "No",
-          "payload": "no"
+          "payload": "no_location"
         }
       ]
     },

@@ -117,11 +117,11 @@ function determineQuestion(sender, current_question, text){
     else if (current_question === 2){
         decideWhatActionToTake(sender, text, question_text, optional_button)
     }
-    else if (current_question === 3){
-        parseTime(sender, text, optional_button)
+    else if(current_question === 3){
+        parseTime(sender, text, question_text, choices)
     }
     else if (current_question === 4){
-        parseLocation(sender, text)
+        parseLocation(sender, text, question_text, optional_button)
     }
     else {
         sendText(sender, "I'm not quite sure what you mean")
@@ -146,6 +146,7 @@ function decideConsentStatus(sender, text1, question_text, choices){
         users[sender] = current_question
     }
 }
+
 
 function decideWhatActionToTake(sender, text1, question_text, optional){
     sendText(sender, "If at any point you want to quit to the main menu, say Quit")
@@ -175,14 +176,15 @@ function decideWhatActionToTake(sender, text1, question_text, optional){
     }
 }
 
-function parseLocation(sender, text1){
+function parseLocation(sender, text1, question_text, optional_button){
     if (text1.includes("location")){
         navigator.geolocation.getCurrentPosition((success, error) => {
             if (error) console.error(error);
             else {
                 axios.get(intermediate_api_url + "/url").then(function ( response){
                     console.log(response.data)
-                    sendUrl(sender, response.data)
+                    sendUrl(sender, question_text, response.data)
+                    sendText(sender, "Your location data has been saved!")
                 })
             }
         });
@@ -192,7 +194,7 @@ function parseLocation(sender, text1){
     }
 }
 
-function parseTime(sender, text1){
+function parseTime(sender, text1, question_text, choices){
     if (text1.includes("pass")){
         sendText(sender, "TBD")
     }
@@ -201,7 +203,7 @@ function parseTime(sender, text1){
             let date_time = value.split("T")
             console.log(date_time)
             if (date_time.length >= 2) {
-                sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Where did you see the moose?`)
+                sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Your data has been saved.`)
                 axios.post(intermediate_api_url + "/time", {
                     date: date_time[0],
                     time: date_time[1]
@@ -212,10 +214,9 @@ function parseTime(sender, text1){
                     .catch(function (error) {
                         console.log(error);
                     });
+                sendButtonMessage(sender, question_text, choices)
             } else {
-                sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Where did you see the moose?`)
-                sendButtonMessage(sender, "If you have recently seen the moose, do you consent to give your current location?",
-                    ["Yes", "No"], ["location", "no_location"])
+                sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Your data has been saved`)
                 axios.post(intermediate_api_url + "/time", {
                     date: date_time[0],
                 })
@@ -225,8 +226,10 @@ function parseTime(sender, text1){
                     .catch(function (error) {
                         console.log(error);
                     });
+                sendButtonMessage(sender, question_text, choices)
             }
         })
+
     }
 }
 
@@ -254,13 +257,13 @@ function sendButtonMessage(sender, text, buttons){
     sendRequest(sender, messageData)
 }
 
-function sendUrl(sender, text){
+function sendUrl(sender, question, text){
     let messageData = {
         "attachment":{
             "type":"template",
             "payload":{
                 "template_type":"button",
-                "text":"Click here to obtain location",
+                "text":question,
                 "buttons":[
                     {
                         "type":"web_url",
