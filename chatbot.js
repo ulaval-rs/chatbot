@@ -70,6 +70,7 @@ function decideMessage(sender, text1){
         //this is what I focus on today
         //we can now visit the main menu by typing quit, no we need to load where we were
         sendText(sender, "Welcome back to the main menu.")
+        users[sender] = current_question
         current_question = 0
         determineQuestion(sender, current_question, "yes")
     }
@@ -96,8 +97,8 @@ function decideMessage(sender, text1){
 
 function detectUser(id, name, text){
     if(id in users && quit === true){
-        current_question = users[id]
-        sendText(id, "Hi " + name + "!")
+        current_question = users[id] - 1
+        sendText(id, "Welcome back " + name + "!")
         quit = false
         determineQuestion(id, current_question, text)
     }
