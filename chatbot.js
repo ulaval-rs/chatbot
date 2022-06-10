@@ -25,7 +25,6 @@ let token = process.env.TOKEN
 let users = {}
 let names = {}
 let quit = true
-let current_question = -1
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
 
@@ -70,8 +69,7 @@ function decideMessage(sender, text1){
         //this is what I focus on today
         //we can now visit the main menu by typing quit, no we need to load where we were
         sendText(sender, "Welcome back to the main menu.")
-        users[sender] = current_question
-        current_question = 0
+        let current_question = 0
         determineQuestion(sender, current_question, "yes")
     }
     else if (text.includes("goodbye")){
@@ -98,17 +96,18 @@ function decideMessage(sender, text1){
 function detectUser(id, name, text){
     if(id in users && quit === true){
         sendText(id, "Welcome back " + name + "!")
-        current_question = users[id]
+        let current_question = users[id]
         quit = false
         determineQuestion(id, current_question, text)
     }
     else if (!(id in users)){
         sendText(id, "Hi " + name + ", it doesn't look like you've used this service before.")
         quit = false
+        let current_question = -1
         determineQuestion(id, current_question, text)
     }
     else if (quit === false){
-        current_question = users[id]
+        let current_question = users[id]
         determineQuestion(id, current_question, text)
     }
 }
@@ -126,7 +125,7 @@ function determineQuestion(sender, current_question, text){
         decideConsentStatus(sender, text, question_text, choices)
     }
     else if (current_question === 2){
-        decideWhatActionToTake(sender, text, question_text, optional_button)
+        decideWhatActionToTake(sender, text, question_text, optional_button, current_question)
     }
     else if(current_question === 3){
         parseTime(sender, text, question_text, choices)
@@ -159,7 +158,7 @@ function decideConsentStatus(sender, text1, question_text, choices){
 }
 
 
-function decideWhatActionToTake(sender, text1, question_text, optional){
+function decideWhatActionToTake(sender, text1, question_text, optional, current_question){
     sendText(sender, "If at any point you want to quit to the main menu, say Quit")
     let text = text1.toLowerCase()
     if (text.includes("moose")){
