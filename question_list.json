@@ -2,7 +2,7 @@
   "questions" : [
     {
       "key": "question0",
-      "question": "Do you consent to being added to the network",
+      "question": "Do you consent to being added to the network? This will require data such as your location.",
       "optional": 0,
       "choices": [
         {
@@ -50,31 +50,21 @@
       "choices" : 0
     },
     {
-      "key": "question3",
-      "question": "Do you consent to giving your location",
-      "optional": 0,
+      "key": "question4",
+      "question": "Where did you see the moose? To give your current location, click the link",
+      "optional" : 0,
       "choices": [
         {
-          "type" : "postback",
-          "title": "Yes",
-          "payload": "location"
+          "type" : "web_url",
+          "title": "Click here to give your location",
+          "url" : "tbd"
         },
         {
-          "type" : "postback",
-          "title": "No",
-          "payload": "no_location"
-        }
-      ]
-    },
-    {
-      "key": "question4",
-      "question": "Where did you see the moose?",
-      "optional": {
         "type" : "postback",
         "title" : "Pass",
         "payload": "pass"
-      },
-      "choices" : "location_app"
+      }
+        ]
     },
     {
       "key": "question5",

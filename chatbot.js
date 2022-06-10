@@ -97,8 +97,8 @@ function decideMessage(sender, text1){
 
 function detectUser(id, name, text){
     if(id in users && quit === true){
-        current_question = users[id] - 1
         sendText(id, "Welcome back " + name + "!")
+        current_question = users[id]
         quit = false
         determineQuestion(id, current_question, text)
     }
@@ -188,20 +188,11 @@ function decideWhatActionToTake(sender, text1, question_text, optional){
 }
 
 function parseLocation(sender, text1, question_text){
-    if (text1.includes("location")){
-        navigator.geolocation.getCurrentPosition((success, error) => {
-            if (error) console.error(error);
-            else {
-                axios.get(intermediate_api_url + "/url").then(function ( response){
-                    console.log(response.data)
-                    sendUrl(sender, question_text, response.data)
-                    sendText(sender, "Your location data has been saved!")
-                })
-            }
-        });
+    if (text1.includes("pass")){
+        sendText(sender, question_text)
     }
-    else if (text1.includes("no_location")){
-        sendText(sender, "In that case, would you like to send where the moose was found?")
+    else if (text1.includes("continue")){
+        sendText(sender, question_text)
     }
 }
 
@@ -225,7 +216,11 @@ function parseTime(sender, text1, question_text, choices){
                     .catch(function (error) {
                         console.log(error);
                     });
-                sendButtonMessage(sender, question_text, choices)
+                axios.get(intermediate_api_url + "/url").then(function ( response){
+                    choices[0].url = response.data
+                    sendButtonMessage(sender, question_text, choices)
+                    sendText(sender, "Once you have entered your location, say continue")
+                })
             } else {
                 sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Your data has been saved`)
                 axios.post(intermediate_api_url + "/time", {
@@ -237,7 +232,10 @@ function parseTime(sender, text1, question_text, choices){
                     .catch(function (error) {
                         console.log(error);
                     });
-                sendButtonMessage(sender, question_text, choices)
+                axios.get(intermediate_api_url + "/url").then(function ( response){
+                    choices[0].url = response.data
+                    sendButtonMessage(sender, question_text, choices)
+                })
             }
         })
 
