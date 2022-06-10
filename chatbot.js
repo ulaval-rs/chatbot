@@ -84,39 +84,38 @@ function decideMessage(sender, text1){
                     .then((response) => {
                         names[sender] = response.data.first_name
                         console.log(response.data.first_name)
-                        detectUser(sender, names[sender], text)
+                        detectUser(sender, names[sender])
+                        let question_text = questions.questions[current_question + 1]["question"]
+                        let choices = questions.questions[current_question + 1]["choices"]
+                        sendButtonMessage(sender, question_text, choices)
                     })
             } else {
-                detectUser(sender, names[sender], text)
+                detectUser(sender, names[sender])
+                determineQuestion(sender, current_question, text)
             }
         })
     }
 }
 
 
-function detectUser(id, name, text){
+function detectUser(id, name){
     if(id in users && quit === true){
         sendText(id, "Welcome back " + name + "!")
         current_question = users[id]
         quit = false
-        determineQuestion(id, current_question, text)
     }
     else if (!(id in users) && current_question === -1){
         sendText(id, "Hi " + name + ", it doesn't look like you've used this service before.")
         quit = false
-        determineQuestion(id, current_question, text)
     }
     else if (quit === false){
         users[id] = current_question
-        determineQuestion(id, current_question, text)
     }
 }
 
 function determineQuestion(sender, question_id, text){
     question_id += 1
-    //users[sender] = current_question
     let question_text = questions.questions[question_id]["question"]
-    let optional_button = questions.questions[question_id]["optional"]
     let choices = questions.questions[question_id]["choices"]
     if (question_id === 0){
         sendButtonMessage(sender, question_text, choices)
@@ -125,7 +124,7 @@ function determineQuestion(sender, question_id, text){
         decideConsentStatus(sender, text, question_text, choices)
     }
     else if (question_id === 2){
-        decideWhatActionToTake(sender, text, question_text, optional_button, question_id)
+        decideWhatActionToTake(sender, text, question_text, choices, question_id)
     }
     else if(question_id === 3){
         parseTime(sender, text, question_text, choices)

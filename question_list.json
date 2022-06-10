@@ -42,12 +42,12 @@
     {
       "key": "question2",
       "question": "When did you see the moose?",
-      "optional": [{
+      "choices": [{
         "type" : "postback",
         "title" : "Pass",
         "payload": "pass"
       }],
-      "choices" : 0
+      "optional" : 0
     },
     {
       "key": "question4",
@@ -69,12 +69,13 @@
     {
       "key": "question5",
       "question": "Can you send a picture of the moose",
-      "optional": {
+      "optional" : 0,
+      "choices": [{
         "type" : "postback",
         "title" : "Pass",
         "payload": "pass"
-      },
-      "choices" : 0
+      }
+      ]
     }
     ]
 }
