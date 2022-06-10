@@ -27,6 +27,7 @@ let names = {}
 let quit = true
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
+let current_question = -1
 
 
 let data = {}
@@ -69,7 +70,7 @@ function decideMessage(sender, text1){
         //this is what I focus on today
         //we can now visit the main menu by typing quit, no we need to load where we were
         sendText(sender, "Welcome back to the main menu.")
-        let current_question = 0
+        current_question = 0
         determineQuestion(sender, current_question, "yes")
     }
     else if (text.includes("goodbye")){
@@ -96,48 +97,48 @@ function decideMessage(sender, text1){
 function detectUser(id, name, text){
     if(id in users && quit === true){
         sendText(id, "Welcome back " + name + "!")
-        let current_question = users[id]
+        current_question = users[id]
         quit = false
         determineQuestion(id, current_question, text)
     }
-    else if (!(id in users)){
+    else if (!(id in users) && current_question === -1){
         sendText(id, "Hi " + name + ", it doesn't look like you've used this service before.")
         quit = false
-        let current_question = -1
         determineQuestion(id, current_question, text)
     }
     else if (quit === false){
-        let current_question = users[id]
+        users[id] = current_question
         determineQuestion(id, current_question, text)
     }
 }
 
-function determineQuestion(sender, current_question, text){
-    current_question += 1
-    users[sender] = current_question
-    let question_text = questions.questions[current_question]["question"]
-    let optional_button = questions.questions[current_question]["optional"]
-    let choices = questions.questions[current_question]["choices"]
-    if (current_question === 0){
+function determineQuestion(sender, question_id, text){
+    question_id += 1
+    //users[sender] = current_question
+    let question_text = questions.questions[question_id]["question"]
+    let optional_button = questions.questions[question_id]["optional"]
+    let choices = questions.questions[question_id]["choices"]
+    if (question_id === 0){
         sendButtonMessage(sender, question_text, choices)
     }
-    else if (current_question === 1){
+    else if (question_id === 1){
         decideConsentStatus(sender, text, question_text, choices)
     }
-    else if (current_question === 2){
-        decideWhatActionToTake(sender, text, question_text, optional_button, current_question)
+    else if (question_id === 2){
+        decideWhatActionToTake(sender, text, question_text, optional_button, question_id)
     }
-    else if(current_question === 3){
+    else if(question_id === 3){
         parseTime(sender, text, question_text, choices)
     }
-    else if (current_question === 4){
+    else if (question_id === 4){
         parseLocation(sender, text, question_text)
     }
     else {
         sendText(sender, "I'm not quite sure what you mean")
-        current_question -= 1
-        users[sender] = current_question
+        question_id -= 1
+        users[sender] = question_id
     }
+    current_question = question_id
 }
 
 function decideConsentStatus(sender, text1, question_text, choices){
