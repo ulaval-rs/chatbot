@@ -121,6 +121,9 @@ function detectUser(id, name){
 
 function determineQuestion(sender, question_id, text){
     question_id += 1
+    if (question_id === 5){
+        question_id = 1
+    }
     let question_text = questions.questions[question_id]["question"]
     let choices = questions.questions[question_id]["choices"]
     if (question_id === 1){
@@ -135,6 +138,9 @@ function determineQuestion(sender, question_id, text){
     else if (question_id === 4){
         parseLocation(sender, text, question_text, choices)
     }
+    else if (question_id === 5){
+        parsePicture(sender, text, questions.questions[0]["question"], questions.questions[0]["choices"])
+    }
     else {
         sendText(sender, "I'm not quite sure what you mean")
         question_id -= 1
@@ -145,7 +151,7 @@ function determineQuestion(sender, question_id, text){
 
 function decideConsentStatus(sender, text1, question_text, choices){
     let text = text1.toLowerCase()
-    if (text.includes("yes")){
+    if (text.includes("yes") || text.includes("pass")){
         sendButtonMessage(sender, question_text,
             choices)
     }
@@ -192,15 +198,20 @@ function decideWhatActionToTake(sender, text1, question_text, optional, current_
 function parseLocation(sender, text1, question_text, choices){
     if (text1.includes("pass")){
         sendButtonMessage(sender, question_text, choices)
+        current_question = 0
     }
     else if (text1.includes("continue")){
         sendButtonMessage(sender, question_text, choices)
+        current_question = 0
     }
 }
 
 function parseTime(sender, text1, question_text, choices){
     if (text1.includes("pass")){
-        sendText(sender, "TBD")
+        axios.get(intermediate_api_url + "/url").then(function ( response){
+            choices[0].url = response.data
+            sendButtonMessage(sender, question_text, choices)
+        })
     }
     else {
         let result = runSample(text1, sender).then(value => {
@@ -244,8 +255,11 @@ function parseTime(sender, text1, question_text, choices){
     }
 }
 
-function parsePicture(sender, image){
-    //TODO
+function parsePicture(sender, text, question_text, choices){
+    if(text.includes("pass")){
+        current_question = 1
+        sendButtonMessage(sender, question_text, choices)
+    }
 }
 
 
