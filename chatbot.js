@@ -70,11 +70,13 @@ function decideMessage(sender, text1){
         //this is what I focus on today
         //we can now visit the main menu by typing quit, no we need to load where we were
         sendText(sender, "Welcome back to the main menu.")
+        users[sender] = current_question
         current_question = 0
         determineQuestion(sender, current_question, "yes")
     }
     else if (text.includes("goodbye")){
         quit = true
+        current_question = users[sender] -1
         sendText(sender, "Goodbye!")
     }
     else {
@@ -85,12 +87,12 @@ function decideMessage(sender, text1){
                         names[sender] = response.data.first_name
                         console.log(response.data.first_name)
                         detectUser(sender, names[sender])
-                        let question_text = questions.questions[current_question + 1]["question"]
-                        let choices = questions.questions[current_question + 1]["choices"]
+                        current_question += 1
+                        let question_text = questions.questions[current_question]["question"]
+                        let choices = questions.questions[current_question]["choices"]
                         sendButtonMessage(sender, question_text, choices)
                     })
             } else {
-                detectUser(sender, names[sender])
                 determineQuestion(sender, current_question, text)
             }
         })
@@ -101,7 +103,7 @@ function decideMessage(sender, text1){
 function detectUser(id, name){
     if(id in users && quit === true){
         sendText(id, "Welcome back " + name + "!")
-        current_question = users[id]
+        current_question = users[id] - 1
         quit = false
     }
     else if (!(id in users) && current_question === -1){
@@ -109,7 +111,8 @@ function detectUser(id, name){
         quit = false
     }
     else if (quit === false){
-        users[id] = current_question
+        sendText(id, "Welcome back " + name + "!")
+        users[id] = current_question -1
     }
 }
 
@@ -118,7 +121,7 @@ function determineQuestion(sender, question_id, text){
     let question_text = questions.questions[question_id]["question"]
     let choices = questions.questions[question_id]["choices"]
     if (question_id === 0){
-        sendButtonMessage(sender, question_text, choices)
+
     }
     else if (question_id === 1){
         decideConsentStatus(sender, text, question_text, choices)
