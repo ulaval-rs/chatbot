@@ -34,6 +34,9 @@ let data = {}
 
 app.get('/webhook/', function(req, res) {
     res.send(req.query['hub.challenge'])
+    axios.post("https://maps.googleapis.com/maps/api/directions/output?parameters", {
+
+    })
 })
 
 app.post('/webhook/', function(req, res) {
@@ -64,14 +67,6 @@ app.post('/webhook/', function(req, res) {
 function decideMessage(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("quit")){
-        //this is where separation of user[id] and current_id happens
-        //current_id is what sends us back to the main menu
-        //user[id] is where the conversation left off
-        //when we type quit, it brings us back to main menu, and current_id goes to 2
-        //when we click on report a moose, it loads current[id] to bring us back to where we were
-        //when we click on the quit option for the main menu, current_id goes to 1
-        //this is what I focus on today
-        //we can now visit the main menu by typing quit, no we need to load where we were
         sendText(sender, "Welcome back to the main menu.")
         users[sender] = current_question
         current_question = 0
@@ -200,9 +195,19 @@ function parseLocation(sender, text1, question_text, choices){
         sendButtonMessage(sender, question_text, choices)
         current_question = 0
     }
-    else if (text1.includes("continue")){
+    else if(text1.includes("continue")){
         sendButtonMessage(sender, question_text, choices)
-        current_question = 0
+    }
+    else{
+        let location = text1.split(" ")
+        let query_location = ""
+        for (let i = 0; i < location.length; i++){
+            query_location += location[i] + "-"
+        }
+        query_location = query_location.slice(0, -1)
+        console.log(query_location)
+        sendUrl(sender, "Here is your location", "https://www.google.com/maps/place/" + query_location)
+        sendButtonMessage(sender, question_text, choices)
     }
 }
 
@@ -293,7 +298,7 @@ function sendUrl(sender, question, text){
                     {
                         "type":"web_url",
                         "url":text,
-                        "title":"Give location",
+                        "title":"Get location",
                         "webview_height_ratio": "full"
                     }
                 ]

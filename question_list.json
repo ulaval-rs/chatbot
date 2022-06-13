@@ -51,7 +51,7 @@
     },
     {
       "key": "question4",
-      "question": "Where did you see the moose? To give your current location, click the link",
+      "question": "Where did you see the moose? To give your current location, either click the link and write continue, or write where you saw the moose as a chat",
       "optional" : 0,
       "choices": [
         {
