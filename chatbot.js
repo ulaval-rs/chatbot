@@ -47,7 +47,10 @@ app.post('/webhook/', function(req, res) {
                 decideMessage(sender, text)
             }
             else {
-                sendText(sender, "Thanks for the picture!")
+                sendText(sender, "Thanks for the picture! Would you like to report another moose?")
+                users[sender] = current_question - 1
+                current_question = 0
+                decideMessage(sender, "yes")
             }
         }
         if (event.postback){
@@ -120,10 +123,7 @@ function determineQuestion(sender, question_id, text){
     question_id += 1
     let question_text = questions.questions[question_id]["question"]
     let choices = questions.questions[question_id]["choices"]
-    if (question_id === 0){
-
-    }
-    else if (question_id === 1){
+    if (question_id === 1){
         decideConsentStatus(sender, text, question_text, choices)
     }
     else if (question_id === 2){
@@ -133,7 +133,7 @@ function determineQuestion(sender, question_id, text){
         parseTime(sender, text, question_text, choices)
     }
     else if (question_id === 4){
-        parseLocation(sender, text, question_text)
+        parseLocation(sender, text, question_text, choices)
     }
     else {
         sendText(sender, "I'm not quite sure what you mean")
@@ -189,12 +189,12 @@ function decideWhatActionToTake(sender, text1, question_text, optional, current_
     }
 }
 
-function parseLocation(sender, text1, question_text){
+function parseLocation(sender, text1, question_text, choices){
     if (text1.includes("pass")){
-        sendText(sender, question_text)
+        sendButtonMessage(sender, question_text, choices)
     }
     else if (text1.includes("continue")){
-        sendText(sender, question_text)
+        sendButtonMessage(sender, question_text, choices)
     }
 }
 
