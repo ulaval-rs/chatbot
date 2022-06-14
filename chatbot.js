@@ -47,24 +47,24 @@ app.post('/webhook/', function(req, res) {
         if (event.message) {
             if (event.message.text) {
                 let text = event.message.text
-                decideMessage(sender, text)
+                detectBaseMessages(sender, text)
             }
             else {
                 sendText(sender, "Thanks for the picture! Would you like to report another moose?")
                 users[sender] = current_question - 1
                 current_question = 0
-                decideMessage(sender, "yes")
+                detectBaseMessages(sender, "yes")
             }
         }
         if (event.postback){
             let text = JSON.stringify(event.postback.payload)
-            decideMessage(sender, text)
+            detectBaseMessages(sender, text)
         }
     }
     res.sendStatus(200)
 })
 
-function decideMessage(sender, text1){
+function detectBaseMessages(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("quit")){
         sendText(sender, "Welcome back to the main menu.")
@@ -361,5 +361,5 @@ async function runSample(text, sender, projectId = 'researchassistant') {
     const result = responses[0].queryResult;
     let response = result.fulfillmentText
     return String(response)
-    //decideMessage(sender, result.fulfillmentText)
+    //detectBaseMessages(sender, result.fulfillmentText)
 }

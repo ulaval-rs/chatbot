@@ -12,19 +12,18 @@
 
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
+            navigator.geolocation.getCurrentPosition(sendPosition);
         } else {
             user_location.innerHTML = "Geolocation is not supported by this browser.";
         }
     }
 
-    function showPosition(position) {
+    function sendPosition(position) {
         let location_data = {
             latitude : position.coords.latitude,
             longitude : position.coords.longitude
         }
         let url = window.location.href
-        console.log(url.slice(0, 21) + '/location')
          let req = fetch(url.slice(0, 21) + '/location',{
             method: 'post',
             body: JSON.stringify({

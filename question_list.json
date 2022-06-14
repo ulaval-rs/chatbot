@@ -1,9 +1,7 @@
 {
-  "questions" : [
-    {
-      "key": "question0",
+    "consent" : {
+      "type": "consent",
       "question": "Do you consent to being added to the network? This will require data such as your location.",
-      "optional": 0,
       "choices": [
         {
           "type" : "postback",
@@ -17,10 +15,9 @@
         }
       ]
     },
-    {
-      "key": "question1",
+     "menu" : {
+      "type": "menu",
       "question": "What would you like to do?",
-      "optional" : 0,
       "choices": [
         {
           "type": "postback",
@@ -39,20 +36,18 @@
         }
       ]
     },
-    {
-      "key": "question2",
+    "date" : {
+      "type": "date",
       "question": "When did you see the moose?",
       "choices": [{
         "type" : "postback",
         "title" : "Pass",
         "payload": "pass"
-      }],
-      "optional" : 0
+      }]
     },
-    {
-      "key": "question4",
+    "location" : {
+      "type": "location",
       "question": "Where did you see the moose? To give your current location, either click the link and write continue, or write where you saw the moose as a chat",
-      "optional" : 0,
       "choices": [
         {
           "type" : "web_url",
@@ -66,10 +61,9 @@
       }
         ]
     },
-    {
-      "key": "question5",
+    "picture" : {
+      "type": "picture",
       "question": "Can you send a picture of the moose",
-      "optional" : 0,
       "choices": [{
         "type" : "postback",
         "title" : "Pass",
@@ -77,6 +71,5 @@
       }
       ]
     }
-    ]
 }
 
