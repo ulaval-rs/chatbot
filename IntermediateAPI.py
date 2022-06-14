@@ -7,8 +7,11 @@ url = "http"
 times = []
 ids_and_locations = {}
 current_id = ""
+senders = []
 
 app = Flask(__name__)
+
+from requests import post
 
 
 def get_id():
@@ -30,12 +33,28 @@ def get_page(id):
         return send_from_directory('html', "LocationPage.html")
 
 
+@app.route('/sender', methods=['POST'])
+def store_sender():
+    data = (json.loads(request.data))
+    print("data: " + str(data))
+    senders.append(data["sender"])
+    print(senders)
+    return Response(status=200)
+
+
+@app.route('/sender', methods=['GET'])
+def get_sender():
+    print(senders)
+    return Response(json.dumps(senders), status=200)
+
+
 @app.route('/location', methods=['POST'])
 def store_location():
     data = (json.loads(request.data))
     id = data["id"]
     ids_and_locations[id] = data["location"]
     print(ids_and_locations)
+    post('http://localhost:5000/location', data)
     return Response(status=200)
 
 

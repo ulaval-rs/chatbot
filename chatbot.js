@@ -30,6 +30,7 @@ let questions = require('./question_list.json')
 let current_question = -1
 
 
+
 let data = {}
 
 app.get('/webhook/', function(req, res) {
@@ -62,6 +63,14 @@ app.post('/webhook/', function(req, res) {
         }
     }
     res.sendStatus(200)
+})
+
+app.post('/location', function(req, res){
+    let location = req.body
+    axios.get(intermediate_api_url + "/sender").then( function (response){
+        console.log(response.data)
+    })
+
 })
 
 function decideMessage(sender, text1){
@@ -236,8 +245,13 @@ function parseTime(sender, text1, question_text, choices){
                     });
                 axios.get(intermediate_api_url + "/url").then(function ( response){
                     choices[0].url = response.data
-                    sendButtonMessage(sender, question_text, choices)
-                    sendText(sender, "Once you have entered your location, say continue")
+                    axios.post(intermediate_api_url + "/sender", {
+                        "sender" : sender
+                    }).then(function (response){
+                        console.log(response.data)
+                        sendText(sender, "Once you have entered your location, say continue")
+                        sendButtonMessage(sender, question_text, choices)
+                    })
                 })
             } else {
                 sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Your data has been saved`)
@@ -252,7 +266,13 @@ function parseTime(sender, text1, question_text, choices){
                     });
                 axios.get(intermediate_api_url + "/url").then(function ( response){
                     choices[0].url = response.data
-                    sendButtonMessage(sender, question_text, choices)
+                    axios.post(intermediate_api_url + "/sender", {
+                        "sender" : sender
+                    }).then(function (response){
+                        console.log(response.data)
+                        sendText(sender, "Once you have entered your location, say continue")
+                        sendButtonMessage(sender, question_text, choices)
+                    })
                 })
             }
         })
