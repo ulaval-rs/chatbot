@@ -37,7 +37,8 @@ def get_page(id):
 def store_sender():
     data = (json.loads(request.data))
     print("data: " + str(data))
-    senders.append(data["sender"])
+    if str(data["sender"]) not in senders:
+        senders.append(data["sender"])
     print(senders)
     return Response(status=200)
 
