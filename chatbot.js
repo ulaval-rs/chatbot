@@ -221,9 +221,9 @@ function parseLocation(sender, text1, question_text, choices){
         console.log(key)
         axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query_location}&key=${key}`)
             .then(function (response){
-                console.log(response.data.results[0].place_id)
+                console.log(response.data.results[0])
                 sendUrl(sender, "Here is your location", "https://www.google.com/maps/place/" +
-                response.data.results[0].place_id)
+                response.data.results[0].formatted_address)
                 sendButtonMessage(sender, question_text, choices)
             })
     }
