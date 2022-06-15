@@ -54,15 +54,19 @@ def store_location():
     id = data["id"]
     ids_and_locations[id] = data["location"]
     print(ids_and_locations)
-    post('http://localhost:5000/location', data)
+    post('http://localhost:5000/location', data["location"])
     return Response(status=200)
 
 
 @app.route('/location/<id>', methods=['GET'])
 def get_location(id):
+    print(ids_and_locations[id]["latitude"])
     data = {
         "id": id,
-        "location": ids_and_locations[id]
+        "location": {
+            "latitude": ids_and_locations[id]["latitude"],
+            "longitude": ids_and_locations[id]["longitude"]
+        }
     }
     return Response(json.dumps(data), status=200)
 

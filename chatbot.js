@@ -68,7 +68,9 @@ app.post('/webhook/', function(req, res) {
 app.post('/location', function(req, res){
     let location = req.body
     axios.get(intermediate_api_url + "/sender").then( function (response){
-        console.log(response.data)
+        console.log(location)
+        sendText(response.data[0], "Your location is " + String(location["latitude"]) + " , " +
+        String(location["longitude"]))
     })
 
 })
