@@ -218,12 +218,14 @@ function parseLocation(sender, text1, question_text, choices){
         query_location = query_location.slice(0, -1)
         console.log(query_location)
         let key = process.env.GOOGLE_TOKEN
+        console.log(key)
         axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query_location}&key=${key}`)
             .then(function (response){
-                console.log(String(Object.keys(response.data)))
+                console.log(response.data.results[0].place_id)
+                sendUrl(sender, "Here is your location", "https://www.google.com/maps/place/" +
+                response.data.results[0].place_id)
+                sendButtonMessage(sender, question_text, choices)
             })
-        sendUrl(sender, "Here is your location", "https://www.google.com/maps/place/" + query_location)
-        sendButtonMessage(sender, question_text, choices)
     }
 }
 
