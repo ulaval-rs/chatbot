@@ -28,6 +28,7 @@ let quit = true
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
 let current_question = "consent"
+let next_question = "main_menu"
 
 
 
@@ -53,7 +54,6 @@ app.post('/webhook/', function(req, res) {
             else {
                 sendText(sender, "Thanks for the picture! Would you like to report another moose?")
                 users[sender] = current_question
-                current_question = "main_menu"
                 decideMessage(sender, "yes")
             }
         }
@@ -79,13 +79,13 @@ function decideMessage(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("quit")){
         sendText(sender, "Welcome back to the main menu.")
-        users[sender] = current_question
         current_question = "main_menu"
+        next_question = users[sender]
         determineQuestion(sender, current_question, "yes")
     }
     else if (text.includes("goodbye")){
         quit = true
-        current_question = users[sender]
+        next_question = users[sender]
         sendText(sender, "Goodbye!")
     }
     else {
@@ -94,7 +94,6 @@ function decideMessage(sender, text1){
                 axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
                     .then((response) => {
                         names[sender] = response.data.first_name
-                        console.log(response.data.first_name)
                         detectUser(sender, names[sender])
                         let question_text = questions.questions[current_question]["question"]
                         let choices = questions.questions[current_question]["choices"]
@@ -129,8 +128,8 @@ function detectUser(id, name){
 }
 
 function determineQuestion(sender, question_id, text){
-    let question_text = questions.questions[question_id]["question"]
-    let choices = questions.questions[question_id]["choices"]
+    let question_text = questions.questions[next_question]["question"]
+    let choices = questions.questions[next_question]["choices"]
     if (question_id === "main_menu"){
         parseConsentAnswer(sender, text, question_text, choices)
     }
@@ -150,7 +149,6 @@ function determineQuestion(sender, question_id, text){
         sendText(sender, "I'm not quite sure what you mean")
         users[sender] = question_id
     }
-    current_question = question_id
 }
 
 function parseConsentAnswer(sender, text1, question_text, choices){
@@ -158,7 +156,8 @@ function parseConsentAnswer(sender, text1, question_text, choices){
     if (text.includes("yes") || text.includes("pass")){
         sendButtonMessage(sender, question_text,
             choices)
-        current_question = "main_menu"
+        current_question = "time"
+        next_question = "time"
     }
     else if (text.includes("no")){
         sendText(sender, "Okay, come back if you change your mind")
@@ -179,7 +178,8 @@ function parseActionAnswer(sender, text1, question_text, optional){
     let text = text1.toLowerCase()
     if (text.includes("moose")){
         sendButtonMessage(sender, question_text, optional)
-        current_question = "time"
+        current_question = "location"
+        next_question = "location"
     }else if (text.includes("data")){
         if ( Object.keys(data) === 0){
             sendText(sender, "You have not entered any data so far")
@@ -262,6 +262,8 @@ function parseTimeAnswer(sender, text1, question_text, choices){
                         console.log(response.data)
                         sendText(sender, "Once you have entered your location, say continue")
                         sendButtonMessage(sender, question_text, choices)
+                        current_question = "picture"
+                        next_question = "picture"
                     })
                 })
             } else {
@@ -283,6 +285,8 @@ function parseTimeAnswer(sender, text1, question_text, choices){
                         console.log(response.data)
                         sendText(sender, "Once you have entered your location, say continue")
                         sendButtonMessage(sender, question_text, choices)
+                        current_question = "picture"
+                        next_question = "picture"
                     })
                 })
             }
