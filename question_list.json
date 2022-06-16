@@ -1,0 +1,82 @@
+{
+  "questions" : [
+    {
+      "key": "question0",
+      "question": "Do you consent to being added to the network? This will require data such as your location.",
+      "optional": 0,
+      "choices": [
+        {
+          "type" : "postback",
+          "title": "Yes",
+          "payload": "yes"
+        },
+        {
+          "type" : "postback",
+          "title": "No",
+          "payload": "no"
+        }
+      ]
+    },
+    {
+      "key": "question1",
+      "question": "What would you like to do?",
+      "optional" : 0,
+      "choices": [
+        {
+          "type": "postback",
+          "title": "Report a moose",
+          "payload": "moose"
+        },
+        {
+          "type" : "postback",
+          "title": "Consult data",
+          "payload" : "data"
+        },
+        {
+          "type" : "postback",
+          "title" : "Quit",
+          "payload": "goodbye"
+        }
+      ]
+    },
+    {
+      "key": "question2",
+      "question": "When did you see the moose?",
+      "choices": [{
+        "type" : "postback",
+        "title" : "Pass",
+        "payload": "pass"
+      }],
+      "optional" : 0
+    },
+    {
+      "key": "question4",
+      "question": "Where did you see the moose? To give your current location, either click the link and write continue, or write where you saw the moose as a chat",
+      "optional" : 0,
+      "choices": [
+        {
+          "type" : "web_url",
+          "title": "Click here to give your location",
+          "url" : "tbd"
+        },
+        {
+        "type" : "postback",
+        "title" : "Pass",
+        "payload": "pass"
+      }
+        ]
+    },
+    {
+      "key": "question5",
+      "question": "Can you send a picture of the moose",
+      "optional" : 0,
+      "choices": [{
+        "type" : "postback",
+        "title" : "Pass",
+        "payload": "pass"
+      }
+      ]
+    }
+    ]
+}
+

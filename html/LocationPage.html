@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="">
+
+<body>
+
+
+<button onclick="getLocation()">Click here to send your coordinates</button>
+<p id="location"></p>
+
+<script>
+    var user_location = document.getElementById("location");
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            user_location.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        let location_data = {
+            latitude : position.coords.latitude,
+            longitude : position.coords.longitude
+        }
+        let url = window.location.href
+        console.log(url.slice(0, 21) + '/location')
+         let req = fetch(url.slice(0, 21) + '/location',{
+            method: 'post',
+            body: JSON.stringify({
+                id : url.slice(22),
+                location : location_data})
+        }).then(response => response.json())
+            .then(data => console.log(data));
+        setTimeout(closeWindow, 50)
+    }
+
+    function closeWindow(){
+        window.close()
+    }
+
+</script>
+</body>
+</html>

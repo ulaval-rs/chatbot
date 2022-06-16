@@ -30,7 +30,7 @@ save the url that appears on the console
 
 2. run the application with the command
 ```bash
-node index.js
+node chatbot.js
 ```
 to test if the app is up and running, visit the url given to you
 by ngrok
@@ -133,5 +133,14 @@ curl -X POST "https://graph.facebook.com/v2.6/me/subscribed_apps?subscribed_fiel
 ``` 
 
 now if you message your page you should get a response!
+
+### Run the location App
+
+1. The location app runs with python, on port 3000. All you need to do is run the app
+
+### Get a google token
+
+1. Make sure you have a google for developpers account. Generate a key from https://console.cloud.google.com/apis/credentials
+and set it as GOOGLE_KEY in environment variables
 
 
