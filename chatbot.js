@@ -218,16 +218,19 @@ function parseLocationAnswer(sender, text1, question_text, choices){
             query_location += location[i] + "+"
         }
         query_location = query_location.slice(0, -1)
-        console.log(query_location)
+        let encoded_location = encodeURI(query_location);
+        console.log(encoded_location)
         let key = process.env.GOOGLE_TOKEN
         console.log(key)
-        axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query_location}&key=${key}`)
+        axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encoded_location}&key=${key}`)
             .then(function (response){
                 console.log(response.data.results[0])
                 sendUrl(sender, "Here is your location", "https://www.google.com/maps/place/" +
                 response.data.results[0].formatted_address)
                 sendButtonMessage(sender, question_text, choices)
-            })
+            }).catch(function (error){
+                console.log(error)
+        })
     }
 }
 
@@ -298,6 +301,7 @@ function parseTimeAnswer(sender, text1, question_text, choices){
 function parsePicture(sender, text, question_text, choices){
     if(text.includes("pass")){
         current_question = "main_menu"
+        next_question = "main_menu"
         sendButtonMessage(sender, question_text, choices)
     }
 }
