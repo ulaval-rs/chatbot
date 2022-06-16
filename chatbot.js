@@ -27,7 +27,7 @@ let names = {}
 let quit = true
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
-let current_question = -1
+let current_question = "consent"
 
 
 
@@ -52,8 +52,8 @@ app.post('/webhook/', function(req, res) {
             }
             else {
                 sendText(sender, "Thanks for the picture! Would you like to report another moose?")
-                users[sender] = current_question - 1
-                current_question = 0
+                users[sender] = current_question
+                current_question = "main_menu"
                 decideMessage(sender, "yes")
             }
         }
@@ -80,12 +80,12 @@ function decideMessage(sender, text1){
     if (text.includes("quit")){
         sendText(sender, "Welcome back to the main menu.")
         users[sender] = current_question
-        current_question = 0
+        current_question = "main_menu"
         determineQuestion(sender, current_question, "yes")
     }
     else if (text.includes("goodbye")){
         quit = true
-        current_question = users[sender] -1
+        current_question = users[sender]
         sendText(sender, "Goodbye!")
     }
     else {
@@ -96,10 +96,12 @@ function decideMessage(sender, text1){
                         names[sender] = response.data.first_name
                         console.log(response.data.first_name)
                         detectUser(sender, names[sender])
-                        current_question += 1
                         let question_text = questions.questions[current_question]["question"]
                         let choices = questions.questions[current_question]["choices"]
                         sendButtonMessage(sender, question_text, choices)
+                        if (current_question === "consent"){
+                            current_question = "main_menu"
+                        }
                     })
             } else {
                 determineQuestion(sender, current_question, text)
@@ -112,68 +114,67 @@ function decideMessage(sender, text1){
 function detectUser(id, name){
     if(id in users && quit === true){
         sendText(id, "Welcome back " + name + "!")
-        current_question = users[id] - 1
+        current_question = users[id]
         quit = false
     }
     else if (!(id in users) && current_question === -1){
         sendText(id, "Hi " + name + ", it doesn't look like you've used this service before.")
+        current_question = "consent"
         quit = false
     }
     else if (quit === false){
         sendText(id, "Welcome back " + name + "!")
-        users[id] = current_question -1
+        users[id] = current_question
     }
 }
 
 function determineQuestion(sender, question_id, text){
-    question_id += 1
-    if (question_id === 5){
-        question_id = 1
-    }
     let question_text = questions.questions[question_id]["question"]
     let choices = questions.questions[question_id]["choices"]
-    if (question_id === 1){
-        decideConsentStatus(sender, text, question_text, choices)
+    if (question_id === "main_menu"){
+        parseConsentAnswer(sender, text, question_text, choices)
     }
-    else if (question_id === 2){
-        decideWhatActionToTake(sender, text, question_text, choices, question_id)
+    else if (question_id === "time"){
+        parseActionAnswer(sender, text, question_text, choices, question_id)
     }
-    else if(question_id === 3){
-        parseTime(sender, text, question_text, choices)
+    else if(question_id === "location"){
+        parseTimeAnswer(sender, text, question_text, choices)
     }
-    else if (question_id === 4){
-        parseLocation(sender, text, question_text, choices)
+    else if (question_id === "picture"){
+        parseLocationAnswer(sender, text, question_text, choices)
     }
-    else if (question_id === 5){
+    else if (question_id === "end"){
         parsePicture(sender, text, questions.questions[0]["question"], questions.questions[0]["choices"])
     }
     else {
         sendText(sender, "I'm not quite sure what you mean")
-        question_id -= 1
         users[sender] = question_id
     }
     current_question = question_id
 }
 
-function decideConsentStatus(sender, text1, question_text, choices){
+function parseConsentAnswer(sender, text1, question_text, choices){
     let text = text1.toLowerCase()
     if (text.includes("yes") || text.includes("pass")){
         sendButtonMessage(sender, question_text,
             choices)
+        current_question = "main_menu"
     }
     else if (text.includes("no")){
         sendText(sender, "Okay, come back if you change your mind")
-        users[sender] = 0
+        users[sender] = "consent"
+        current_question = "consent"
     }
     else {
         sendText(sender, "Here are your options")
         sendButtonMessage(sender, question_text,
             choices)
+        current_question = "consent"
     }
 }
 
 
-function decideWhatActionToTake(sender, text1, question_text, optional, current_question){
+function parseActionAnswer(sender, text1, question_text, optional, current_question){
     sendText(sender, "If at any point you want to quit to the main menu, say Quit")
     let text = text1.toLowerCase()
     if (text.includes("moose")){
@@ -201,7 +202,7 @@ function decideWhatActionToTake(sender, text1, question_text, optional, current_
     }
 }
 
-function parseLocation(sender, text1, question_text, choices){
+function parseLocationAnswer(sender, text1, question_text, choices){
     if (text1.includes("pass")){
         sendButtonMessage(sender, question_text, choices)
         current_question = 0
@@ -229,7 +230,7 @@ function parseLocation(sender, text1, question_text, choices){
     }
 }
 
-function parseTime(sender, text1, question_text, choices){
+function parseTimeAnswer(sender, text1, question_text, choices){
     if (text1.includes("pass")){
         axios.get(intermediate_api_url + "/url").then(function ( response){
             choices[0].url = response.data
@@ -291,7 +292,7 @@ function parseTime(sender, text1, question_text, choices){
 
 function parsePicture(sender, text, question_text, choices){
     if(text.includes("pass")){
-        current_question = 1
+        current_question = "main_menu"
         sendButtonMessage(sender, question_text, choices)
     }
 }
