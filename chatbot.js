@@ -135,7 +135,7 @@ function determineQuestion(sender, question_id, text){
         parseConsentAnswer(sender, text, question_text, choices)
     }
     else if (question_id === "time"){
-        parseActionAnswer(sender, text, question_text, choices, question_id)
+        parseActionAnswer(sender, text, question_text, choices)
     }
     else if(question_id === "location"){
         parseTimeAnswer(sender, text, question_text, choices)
@@ -174,11 +174,12 @@ function parseConsentAnswer(sender, text1, question_text, choices){
 }
 
 
-function parseActionAnswer(sender, text1, question_text, optional, current_question){
+function parseActionAnswer(sender, text1, question_text, optional){
     sendText(sender, "If at any point you want to quit to the main menu, say Quit")
     let text = text1.toLowerCase()
     if (text.includes("moose")){
         sendButtonMessage(sender, question_text, optional)
+        current_question = "time"
     }else if (text.includes("data")){
         if ( Object.keys(data) === 0){
             sendText(sender, "You have not entered any data so far")
@@ -197,7 +198,7 @@ function parseActionAnswer(sender, text1, question_text, optional, current_quest
     }
     else {
         sendText(sender, "Please choose one of the options.")
-        current_question -= 1
+        current_question = "main_menu"
         users[sender] = current_question
     }
 }
