@@ -298,8 +298,8 @@ function parseTimeAnswer(sender, text1, question_text, choices){
 
 function parsePicture(sender, text, question_text, choices){
     if(text.includes("pass") || text.includes("yes")){
-        current_question = "main_menu"
-        next_question = "main_menu"
+        current_question = "time"
+        next_question = "time"
         sendButtonMessage(sender, question_text, choices)
     }
 }
