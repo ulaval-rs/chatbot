@@ -36,9 +36,6 @@ let data = {}
 
 app.get('/webhook/', function(req, res) {
     res.send(req.query['hub.challenge'])
-    axios.post("https://maps.googleapis.com/maps/api/directions/output?parameters", {
-
-    })
 })
 
 app.post('/webhook/', function(req, res) {
@@ -53,7 +50,8 @@ app.post('/webhook/', function(req, res) {
             }
             else {
                 sendText(sender, "Thanks for the picture! Would you like to report another moose?")
-                users[sender] = current_question
+                current_question = "end"
+                next_question = "main_menu"
                 decideMessage(sender, "yes")
             }
         }
@@ -143,7 +141,7 @@ function determineQuestion(sender, question_id, text){
         parseLocationAnswer(sender, text, question_text, choices)
     }
     else if (question_id === "end"){
-        parsePicture(sender, text, questions.questions[0]["question"], questions.questions[0]["choices"])
+        parsePicture(sender, text, question_text, choices)
     }
     else {
         sendText(sender, "I'm not quite sure what you mean")
@@ -206,7 +204,7 @@ function parseActionAnswer(sender, text1, question_text, optional){
 function parseLocationAnswer(sender, text1, question_text, choices){
     if (text1.includes("pass")){
         sendButtonMessage(sender, question_text, choices)
-        current_question = 0
+        current_question = "picture"
     }
     else if(text1.includes("continue")){
         sendButtonMessage(sender, question_text, choices)
@@ -299,7 +297,7 @@ function parseTimeAnswer(sender, text1, question_text, choices){
 }
 
 function parsePicture(sender, text, question_text, choices){
-    if(text.includes("pass")){
+    if(text.includes("pass") || text.includes("yes")){
         current_question = "main_menu"
         next_question = "main_menu"
         sendButtonMessage(sender, question_text, choices)
