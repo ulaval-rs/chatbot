@@ -25,11 +25,12 @@ let token = process.env.TOKEN
 let users = {}
 let names = {}
 let quit = true
+let menu_quit = false
 let intermediate_api_url = "http://127.0.0.1:3000"
 let questions = require('./question_list.json')
 let current_question = "consent"
 let next_question = "main_menu"
-
+let saved_state = ["main_menu", "main_menu"]
 
 
 let data = {}
@@ -76,9 +77,14 @@ app.post('/location', function(req, res){
 function decideMessage(sender, text1){
     let text = text1.toLowerCase()
     if (text.includes("quit")){
+        menu_quit = true
         sendText(sender, "Welcome back to the main menu.")
+        let previous = questions[Object.keys(questions)[//get index of saved state and subtract 1 to get previous]]
+            //or you could add a catch to location to filter quit
+        saved_state[0] = current_question
+        saved_state[1] = next_question
         current_question = "main_menu"
-        next_question = users[sender]
+        next_question = "main_menu"
         determineQuestion(sender, current_question, "yes")
     }
     else if (text.includes("goodbye")){
@@ -91,6 +97,7 @@ function decideMessage(sender, text1){
             if (value === "welcome") {
                 axios.get(`https://graph.facebook.com/${sender}?fields=first_name,last_name,profile_pic&access_token=${token}`)
                     .then((response) => {
+                        menu_quit = false
                         names[sender] = response.data.first_name
                         detectUser(sender, names[sender])
                         let question_text = questions.questions[current_question]["question"]
@@ -151,6 +158,11 @@ function determineQuestion(sender, question_id, text){
 
 function parseConsentAnswer(sender, text1, question_text, choices){
     let text = text1.toLowerCase()
+    if(menu_quit === true){
+        menu_quit = false
+        current_question = saved_state[0]
+        next_question = saved_state[1]
+    }
     if (text.includes("yes") || text.includes("pass")){
         sendButtonMessage(sender, question_text,
             choices)
