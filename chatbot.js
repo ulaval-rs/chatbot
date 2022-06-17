@@ -79,10 +79,8 @@ function decideMessage(sender, text1){
     if (text.includes("quit")){
         menu_quit = true
         sendText(sender, "Welcome back to the main menu.")
-        let previous = questions[Object.keys(questions)[//get index of saved state and subtract 1 to get previous]]
+            //get index of saved state and subtract 1 to get previous]]
             //or you could add a catch to location to filter quit
-        saved_state[0] = current_question
-        saved_state[1] = next_question
         current_question = "main_menu"
         next_question = "main_menu"
         determineQuestion(sender, current_question, "yes")
@@ -158,16 +156,18 @@ function determineQuestion(sender, question_id, text){
 
 function parseConsentAnswer(sender, text1, question_text, choices){
     let text = text1.toLowerCase()
-    if(menu_quit === true){
-        menu_quit = false
-        current_question = saved_state[0]
-        next_question = saved_state[1]
-    }
     if (text.includes("yes") || text.includes("pass")){
         sendButtonMessage(sender, question_text,
             choices)
-        current_question = "time"
-        next_question = "time"
+        if(menu_quit === true){
+            menu_quit = false
+            current_question = saved_state[0]
+            next_question = saved_state[1]
+        }
+        else {
+            current_question = "time"
+            next_question = "time"
+        }
     }
     else if (text.includes("no")){
         sendText(sender, "Okay, come back if you change your mind")
@@ -183,11 +183,13 @@ function parseConsentAnswer(sender, text1, question_text, choices){
 }
 
 
-function parseActionAnswer(sender, text1, question_text, optional){
+function parseActionAnswer(sender, text1, question_text, choices){
     sendText(sender, "If at any point you want to quit to the main menu, say Quit")
     let text = text1.toLowerCase()
     if (text.includes("moose")){
-        sendButtonMessage(sender, question_text, optional)
+        sendButtonMessage(sender, question_text, choices)
+        saved_state[0] = current_question
+        saved_state[1] = next_question
         current_question = "location"
         next_question = "location"
     }else if (text.includes("data")){
@@ -216,12 +218,18 @@ function parseActionAnswer(sender, text1, question_text, optional){
 function parseLocationAnswer(sender, text1, question_text, choices){
     if (text1.includes("pass")){
         sendButtonMessage(sender, question_text, choices)
+        saved_state[0] = current_question
+        saved_state[1] = next_question
         current_question = "picture"
     }
     else if(text1.includes("continue")){
+        saved_state[0] = current_question
+        saved_state[1] = next_question
         sendButtonMessage(sender, question_text, choices)
     }
     else{
+        saved_state[0] = current_question
+        saved_state[1] = next_question
         let location = text1.split(" ")
         let query_location = ""
         for (let i = 0; i < location.length; i++){
@@ -245,6 +253,8 @@ function parseLocationAnswer(sender, text1, question_text, choices){
 }
 
 function parseTimeAnswer(sender, text1, question_text, choices){
+    saved_state[0] = current_question
+    saved_state[1] = next_question
     if (text1.includes("pass")){
         axios.get(intermediate_api_url + "/url").then(function ( response){
             choices[0].url = response.data
@@ -309,6 +319,8 @@ function parseTimeAnswer(sender, text1, question_text, choices){
 }
 
 function parsePicture(sender, text, question_text, choices){
+    saved_state[0] = current_question
+    saved_state[1] = next_question
     if(text.includes("pass") || text.includes("yes")){
         current_question = "time"
         next_question = "time"
