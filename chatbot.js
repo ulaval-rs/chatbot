@@ -119,7 +119,7 @@ function detectUser(id, name){
         current_question = users[id]
         quit = false
     }
-    else if (!(id in users) && current_question === -1){
+    else if (!(id in users) && current_question === "consent"){
         sendText(id, "Hi " + name + ", it doesn't look like you've used this service before.")
         current_question = "consent"
         quit = false
@@ -136,7 +136,7 @@ function determineQuestion(sender, question_id, text){
     if (question_id !== "time" && text.includes("moose")){
         sendButtonMessage(sender, question_text, choices)
     }
-    if (question_id === "main_menu"){
+    else if (question_id === "main_menu"){
         parseConsentAnswer(sender, text, question_text, choices)
     }
     else if (question_id === "time"){
