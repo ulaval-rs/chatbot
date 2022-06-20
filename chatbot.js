@@ -67,9 +67,13 @@ app.post('/webhook/', function(req, res) {
 app.post('/location', function(req, res){
     let location = req.body
     axios.get(intermediate_api_url + "/sender").then( function (response){
-        console.log(location)
         sendText(response.data[0], "Your location is " + String(location["latitude"]) + " , " +
         String(location["longitude"]))
+        sendButtonMessage(response.data[0], questions.questions[next_question]["question"],
+            questions.questions[next_question]["choices"])
+        saved_state[0] = current_question
+        saved_state[1] = next_question
+        current_question = "picture"
     })
 
 })
@@ -79,8 +83,6 @@ function decideMessage(sender, text1){
     if (text.includes("quit")){
         menu_quit = true
         sendText(sender, "Welcome back to the main menu.")
-            //get index of saved state and subtract 1 to get previous]]
-            //or you could add a catch to location to filter quit
         current_question = "main_menu"
         next_question = "main_menu"
         determineQuestion(sender, current_question, "yes")
