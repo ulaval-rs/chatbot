@@ -269,8 +269,8 @@ function parseTimeAnswer(sender, text1, question_text, choices){
     else {
         let result = runSample(text1, sender).then(value => {
             console.log(value)
-            if (value.includes("Say that one more time?")){
-                sendText(sender, value)
+            if (value.includes("?")){
+                sendText(sender, "Can you repeat please?")
             }
             else {
                 let date_time = value.split("T")
