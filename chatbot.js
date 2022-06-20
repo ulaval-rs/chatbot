@@ -133,16 +133,19 @@ function detectUser(id, name){
 function determineQuestion(sender, question_id, text){
     let question_text = questions.questions[next_question]["question"]
     let choices = questions.questions[next_question]["choices"]
+    if (question_id !== "time" && text.includes("moose")){
+        sendButtonMessage(sender, question_text, choices)
+    }
     if (question_id === "main_menu"){
         parseConsentAnswer(sender, text, question_text, choices)
     }
     else if (question_id === "time"){
         parseActionAnswer(sender, text, question_text, choices)
     }
-    else if(question_id === "location"){
+    else if(question_id === "location" && !text.includes("moose")){
         parseTimeAnswer(sender, text, question_text, choices)
     }
-    else if (question_id === "picture"){
+    else if (question_id === "picture" && !text.includes("moose")){
         parseLocationAnswer(sender, text, question_text, choices)
     }
     else if (question_id === "end"){
@@ -282,7 +285,6 @@ function parseTimeAnswer(sender, text1, question_text, choices){
                     axios.post(intermediate_api_url + "/sender", {
                         "sender" : sender
                     }).then(function (response){
-                        console.log(response.data)
                         sendText(sender, "Once you have entered your location, say continue")
                         sendButtonMessage(sender, question_text, choices)
                         current_question = "picture"
