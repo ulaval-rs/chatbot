@@ -268,54 +268,60 @@ function parseTimeAnswer(sender, text1, question_text, choices){
     }
     else {
         let result = runSample(text1, sender).then(value => {
-            let date_time = value.split("T")
-            console.log(date_time)
-            if (date_time.length >= 2) {
-                sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Your data has been saved.`)
-                axios.post(intermediate_api_url + "/time", {
-                    date: date_time[0],
-                    time: date_time[1]
-                })
-                    .then(function (response) {
-                        console.log(response.data);
+            console.log(value)
+            if (value.includes("Say that one more time?")){
+                sendText(sender, value)
+            }
+            else {
+                let date_time = value.split("T")
+                console.log(date_time)
+                if (date_time.length >= 2) {
+                    sendText(sender, `Okay cool, the moose was seen on ${date_time[0]} at ${date_time[1]}. Your data has been saved.`)
+                    axios.post(intermediate_api_url + "/time", {
+                        date: date_time[0],
+                        time: date_time[1]
                     })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                axios.get(intermediate_api_url + "/url").then(function ( response){
-                    choices[0].url = response.data
-                    axios.post(intermediate_api_url + "/sender", {
-                        "sender" : sender
-                    }).then(function (response){
-                        sendText(sender, "Once you have entered your location, say continue")
-                        sendButtonMessage(sender, question_text, choices)
-                        current_question = "picture"
-                        next_question = "picture"
+                        .then(function (response) {
+                            console.log(response.data);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    axios.get(intermediate_api_url + "/url").then(function (response) {
+                        choices[0].url = response.data
+                        axios.post(intermediate_api_url + "/sender", {
+                            "sender": sender
+                        }).then(function (response) {
+                            sendText(sender, "Once you have entered your location, say continue")
+                            sendButtonMessage(sender, question_text, choices)
+                            current_question = "picture"
+                            next_question = "picture"
+                        })
                     })
-                })
-            } else {
-                sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Your data has been saved`)
-                axios.post(intermediate_api_url + "/time", {
-                    date: date_time[0],
-                })
-                    .then(function (response) {
-                        console.log(response.data);
+                } else {
+                    sendText(sender, `Okay cool, the moose was seen on ${date_time[0]}. Your data has been saved`)
+                    axios.post(intermediate_api_url + "/time", {
+                        date: date_time[0],
                     })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                axios.get(intermediate_api_url + "/url").then(function ( response){
-                    choices[0].url = response.data
-                    axios.post(intermediate_api_url + "/sender", {
-                        "sender" : sender
-                    }).then(function (response){
-                        console.log(response.data)
-                        sendText(sender, "Once you have entered your location, say continue")
-                        sendButtonMessage(sender, question_text, choices)
-                        current_question = "picture"
-                        next_question = "picture"
+                        .then(function (response) {
+                            console.log(response.data);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    axios.get(intermediate_api_url + "/url").then(function (response) {
+                        choices[0].url = response.data
+                        axios.post(intermediate_api_url + "/sender", {
+                            "sender": sender
+                        }).then(function (response) {
+                            console.log(response.data)
+                            sendText(sender, "Once you have entered your location, say continue")
+                            sendButtonMessage(sender, question_text, choices)
+                            current_question = "picture"
+                            next_question = "picture"
+                        })
                     })
-                })
+                }
             }
         })
 
@@ -398,24 +404,19 @@ app.listen(app.get('port'), function() {
 })
 
 async function runSample(text, sender, projectId = 'researchassistant') {
-    // A unique identifier for the given session
     const sessionId = uuid.v4();
 
-    // Create a new session
     const sessionClient = new dialogflow.SessionsClient();
     const sessionPath = sessionClient.projectAgentSessionPath(
         projectId,
         sessionId
     );
 
-    // The text query request.
     const request = {
         session: sessionPath,
         queryInput: {
             text: {
-                // The query to send to the dialogflow agent
                 text: text,
-                // The language used by the client (en-US)
                 languageCode: 'en-US',
             },
         },
@@ -426,5 +427,4 @@ async function runSample(text, sender, projectId = 'researchassistant') {
     const result = responses[0].queryResult;
     let response = result.fulfillmentText
     return String(response)
-    //decideMessage(sender, result.fulfillmentText)
 }
